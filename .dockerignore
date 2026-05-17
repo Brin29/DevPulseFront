@@ -1,0 +1,10 @@
+node_modules
+dist
+.git
+.gitignore
+.vscode
+.env
+src/controllers
+src/middlewares
+src/routes
+src/utils
