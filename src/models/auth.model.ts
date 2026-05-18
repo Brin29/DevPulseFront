@@ -10,8 +10,6 @@ export interface SignInResponseData {
 }
 
 export interface SignInRequest {
-  username: string;
+  email: string;
   password: string;
-  app: string;
-  device_id: string;
 }

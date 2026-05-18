@@ -1,7 +1,6 @@
 import { TextField, type InputBaseProps } from "@mui/material";
 import { type FieldErrors, type UseFormRegister, type UseFormTrigger } from 'react-hook-form';
 
-
 interface InputProps {
   register: UseFormRegister<any>;
   name: string;
@@ -22,11 +21,22 @@ export enum InputType {
   CHECKBOX = 'checkbox'
 }
 
-export const Input: React.FC<InputProps> = ({}) => {
+export const Input: React.FC<InputProps> = ({register, name, errors, label = '', type, inputProps, disabled = false, trigger}) => {
   return (
     <>
-      <TextField />
-      {}
+      <TextField 
+        required
+        disabled={disabled}
+        type={type}
+        error={errors && !!errors[name]}
+        id={name}
+        label={label}
+        variant="standard"
+        {...register(name)}
+        {...(inputProps && { inputProps: inputProps })}
+        onChange={() => trigger && trigger()}
+        fullWidth
+      />
     </>
   );
 };

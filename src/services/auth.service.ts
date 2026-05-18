@@ -22,7 +22,7 @@ async function authCall<TRes, TReq = object>(
   }
 }
 
-export const signIn = (signInRequest: SignInRequest) => authCall<SignInResponseData, SignInRequest>("", signInRequest);
+export const signIn = (signInRequest: SignInRequest) => authCall<SignInResponseData, SignInRequest>("/auth/login", signInRequest);
 
 export const signUp = () => console.log("");
 
