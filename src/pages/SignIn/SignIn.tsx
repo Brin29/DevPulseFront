@@ -1,19 +1,15 @@
-import { Button, Box } from "@mui/material";
-import { signIn } from "../../services/auth.service";
-import { signInAdapter } from "../../adapters";
+import { Button, Box, Typography, Link } from "@mui/material";
 import { useForm } from "react-hook-form";
 import type { SignInRequest } from "../../models/auth.model";
 import { Input, InputType } from "../../components/Input";
-
+import { useNavigate } from "react-router-dom";
+import { authUserMutations } from "../../hooks/auth.hook";
 
 export const SignIn = () => {
+  const { login } = authUserMutations();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    trigger,
-  } = useForm<SignInRequest>({
+  const navigate = useNavigate();
+  const { handleSubmit, control } = useForm<SignInRequest>({
     defaultValues: {
       email: "",
       password: "",
@@ -25,35 +21,78 @@ export const SignIn = () => {
       ...data,
     };
 
-    const response = await signIn(payload);
-    signInAdapter(response);
-    console.log(payload);
+    login.mutate(payload, {
+      onSuccess: (response: any) => {
+        navigate("/dashboard");
+        localStorage.setItem("authMe", JSON.stringify(response));
+      },
+      onError: (error: any) => {
+        console.log(error);
+      },
+    });
   };
 
   return (
-    <>
-      <Box noValidate component="form" onSubmit={handleSubmit(onSubmit)}>
+    <Box className="form-container">
+      <Typography component="h2">Sign in</Typography>
+      <Typography>
+        Don't have an account?{" "}
+        <Link
+          onClick={() => {
+            navigate("/request-code");
+          }}
+        >
+          Sign Up
+        </Link>
+      </Typography>
+      <Box
+        className="form-container"
+        noValidate
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <Input
-          register={register}
+          control={control}
           type={InputType.TEXT}
-          label="Correo"
+          label="Email"
           name="email"
-          trigger={trigger}
           disabled={false}
-          errors={errors}
+          rules={{
+            required: "Email is required",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Invalid email",
+            },
+          }}
         />
 
         <Input
-          register={register}
+          control={control}
           type={InputType.PASSWORD}
-          label="Contraseña"
+          label="Password"
           name="password"
-          trigger={trigger}
           disabled={false}
-          errors={errors}
+          rules={{
+            required: "Password is required",
+            minLength: {
+              value: 6,
+              message: "Minimum 6 characters",
+            },
+          }}
         />
-        <Button type="submit">Enviar</Button>
+        <Typography>
+          <Link
+            onClick={() => {
+              navigate("/sign-up");
+            }}
+          >
+            Forgot password?
+          </Link>
+        </Typography>
+        <Button className="w-full" type="submit">
+          Sign in
+        </Button>
       </Box>
-    </>
+    </Box>
   );
 };

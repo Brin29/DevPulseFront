@@ -1,0 +1,69 @@
+@use "../variables" as *;
+@use "../abstract/mixins" as *;
+
+.code-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.code-input-fields {
+  display: flex;
+  gap: $spacing-sm;
+  justify-content: center;
+}
+
+.code-input-field {
+  width: 48px;
+
+  .MuiOutlinedInput-root {
+    border-radius: $border-radius-md;
+    background-color: $color-gray-50;
+
+    &:hover .MuiOutlinedInput-notchedOutline {
+      border-color: $color-primary;
+    }
+
+    &.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: $color-primary;
+      border-width: 2px;
+    }
+  }
+
+  .MuiInputBase-input {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    padding: $spacing-sm;
+    letter-spacing: 2px;
+    color: $color-gray-800;
+  }
+
+  &.Mui-error .MuiOutlinedInput-root {
+    .MuiOutlinedInput-notchedOutline {
+      border-color: $color-error;
+    }
+  }
+}
+
+.code-input-error {
+  color: $color-error;
+  font-size: 12px;
+  text-align: center;
+  margin-top: $spacing-xs;
+}
+
+@include respond("sm") {
+  .code-input-fields {
+    gap: 6px;
+  }
+
+  .code-input-field {
+    width: 40px;
+
+    .MuiInputBase-input {
+      font-size: 18px;
+      padding: $spacing-xs;
+    }
+  }
+}
