@@ -1,7 +1,11 @@
 @use "./variables" as *;
 @use "./components/input";
 @use "./components/code-input";
+@use "./components/layout";
+@use "./components/sidebar";
+@use "./components/header";
 @use "./pages/auth";
+@use "./pages/teams";
 
 html, body {
   margin: 0;

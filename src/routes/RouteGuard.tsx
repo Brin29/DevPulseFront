@@ -22,6 +22,8 @@ const RouteGuard = ({ children }: { children: JSX.Element }) => {
     console.warn("⚠️ No hay sesión activa, redirigiendo a inicio de sesión");
     return <Navigate to="/sign-in" replace />;
   }
+
+  return children;
 };
 
 export default RouteGuard;
