@@ -1,11 +1,18 @@
-import "./App.css";
-import { SignIn } from "./pages/SignIn/SignIn";
+import { LoaderPopup } from "./components/Loader/LoaderPopup";
+import { LoaderProvider, useLoader } from "./context/LoaderContext";
+import AppRouter from "./routes/AppRouter";
+
+const GlobalLoader = () => {
+  const { isLoading } = useLoader();
+  return isLoading ? <LoaderPopup /> : null;
+};
 
 function App() {
   return (
-    <>
-      <SignIn />
-    </>
+    <LoaderProvider>
+      <AppRouter />
+      <GlobalLoader />
+    </LoaderProvider>
   );
 }
 

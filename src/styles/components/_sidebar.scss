@@ -1,0 +1,97 @@
+@use "../variables" as *;
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1200;
+  background-color: $color-white;
+  border-right: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+  width: 240px;
+  overflow: hidden;
+
+  &--collapsed {
+    width: 64px;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 64px;
+    border-bottom: 1px solid $color-gray-200;
+    padding: 0 $spacing-md;
+    flex-shrink: 0;
+  }
+
+  &__logo {
+    font-family: $font-primary;
+    font-weight: 700;
+    font-size: 20px;
+    color: $color-primary;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  &__nav {
+    flex: 1;
+    padding: $spacing-sm;
+    overflow-y: auto;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    padding: 10px $spacing-md;
+    border-radius: $border-radius-sm;
+    color: $color-gray-600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    margin-bottom: 2px;
+    min-height: 44px;
+    white-space: nowrap;
+    overflow: hidden;
+
+    &:hover {
+      background-color: $color-primary-bg;
+      color: $color-primary;
+    }
+
+    &--active {
+      background-color: $color-primary-bg;
+      color: $color-primary;
+      font-weight: 600;
+
+      .sidebar__item-icon {
+        color: $color-primary;
+      }
+    }
+  }
+
+  &__item-icon {
+    font-size: 22px;
+    min-width: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $color-gray-400;
+    flex-shrink: 0;
+  }
+
+  &__item-label {
+    opacity: 1;
+    transition: opacity 0.2s, width 0.2s;
+    overflow: hidden;
+  }
+
+  &--collapsed &__item-label {
+    opacity: 0;
+    width: 0;
+  }
+}

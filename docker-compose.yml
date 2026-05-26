@@ -6,4 +6,7 @@ services:
     container_name: devpulsefrontprod
     ports:
       - "3000:80"
+    volumes:
+      - .:/app
+      - /app/node_modules
     restart: unless-stopped

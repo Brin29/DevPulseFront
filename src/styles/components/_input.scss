@@ -1,0 +1,54 @@
+@use "../variables" as *;
+
+.form-field {
+  margin-bottom: $spacing-md;
+}
+
+.MuiFormControl-root {
+  .MuiInputLabel-root {
+    font-family: $font-primary;
+    font-size: 14px;
+    color: $color-gray-500;
+
+    &.Mui-focused {
+      color: $color-primary;
+    }
+
+    &.Mui-error {
+      color: $color-error;
+    }
+  }
+
+  .MuiOutlinedInput-root {
+    border-radius: $border-radius-md;
+    background-color: $color-gray-50;
+    font-family: $font-primary;
+
+    &:hover .MuiOutlinedInput-notchedOutline {
+      border-color: $color-primary-light;
+    }
+
+    &.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: $color-primary;
+      border-width: 2px;
+    }
+
+    &.Mui-disabled {
+      background-color: $color-gray-100;
+
+      .MuiOutlinedInput-notchedOutline {
+        border-color: $color-gray-200;
+      }
+    }
+  }
+
+  .MuiFormHelperText-root {
+    font-family: $font-primary;
+    font-size: 12px;
+    margin-top: 4px;
+
+    &.Mui-error {
+      color: $color-error;
+    }
+  }
+}

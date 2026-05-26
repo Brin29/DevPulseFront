@@ -1,0 +1,31 @@
+@use "./variables" as *;
+@use "./components/input";
+@use "./components/code-input";
+@use "./components/layout";
+@use "./components/sidebar";
+@use "./components/header";
+@use "./pages/auth";
+@use "./pages/teams";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: $color-gray-50;
+  font-family: $font-primary;
+  color: $color-gray-800;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+::selection {
+  background-color: $color-primary;
+  color: $color-white;
+}
