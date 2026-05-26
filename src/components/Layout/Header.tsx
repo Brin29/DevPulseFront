@@ -14,6 +14,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
 // import { useNavigate } from "react-router-dom";
+import { useTeamContext } from "../../context/TeamContext";
 
 interface HeaderProps {
   collapsed: boolean;
@@ -29,6 +30,7 @@ export const Header = ({
   // const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { selectedTeam } = useTeamContext();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const menuOpen = Boolean(anchorEl);
@@ -68,7 +70,9 @@ export const Header = ({
             {collapsed ? <MenuIcon /> : <ChevronLeftIcon />}
           </IconButton>
         )}
-        <Typography className="header__title">Dashboard</Typography>
+        <Typography className="header__title">
+          {selectedTeam ? selectedTeam.name : "Dashboard"}
+        </Typography>
       </div>
 
       <div className="header__right">

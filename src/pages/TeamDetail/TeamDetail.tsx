@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import {
   Box,
   Typography,
@@ -17,11 +18,21 @@ import { useTeam } from "../../hooks/team.hook";
 import { DeleteTeamDialog } from "../../components/Team/DeleteTeamDialog";
 import { EditTeamDialog } from "../../components/Team/EditTeamDialog";
 import { SendInvitationTeam } from "../../components/InvitationsTeam/SendInvitationTeam";
+import { InvitationsList } from "../../components/InvitationsTeam/InvitationsList";
+import { useTeamContext } from "../../context/TeamContext";
 
 export const TeamDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data, isLoading, isError, error: queryError } = useTeam(id!);
+  const { setSelectedTeam } = useTeamContext();
+
+  useEffect(() => {
+    if (data?.team) {
+      setSelectedTeam({ id: data.team.id, name: data.team.name });
+    }
+    return () => setSelectedTeam(null);
+  }, [data, setSelectedTeam]);
 
   return (
     <Box>
@@ -101,52 +112,61 @@ export const TeamDetail = () => {
 
           {data.team.members && data.team.members.length > 0 ? (
             <Stack spacing={1.5}>
-              {data.team.members.map((member: any) => (
-                <Card
-                  key={member.id}
-                  variant="outlined"
-                  sx={{ borderRadius: 2 }}
-                >
-                  <CardContent
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      py: 1.5,
-                      "&:last-child": { pb: 1.5 },
-                    }}
+              {data.team.members.map((member: any) => {
+
+                const { userId: user  } = member;
+
+                console.log(user.firstName)
+
+                return (
+                  <Card
+                    key={user._id}
+                    variant="outlined"
+                    sx={{ borderRadius: 2 }}
                   >
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                    <CardContent
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        py: 1.5,
+                        "&:last-child": { pb: 1.5 },
+                      }}
                     >
-                      <Avatar sx={{ width: 36, height: 36, fontSize: 14 }}>
-                        {member.name?.charAt(0).toUpperCase()}
-                      </Avatar>
-                      <Box>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {member.name}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {member.email}
-                        </Typography>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                      >
+                        <Avatar sx={{ width: 36, height: 36, fontSize: 14 }}>
+                          {user.firstName?.charAt(0).toUpperCase()}
+                        </Avatar>
+                        <Box>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {user.firstName} {user.lastName}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {user.email}
+                          </Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                    <Chip
-                      label={member.role}
-                      size="small"
-                      color={member.role === "admin" ? "primary" : "default"}
-                      variant="outlined"
-                      sx={{ textTransform: "capitalize" }}
-                    />
-                  </CardContent>
-                </Card>
-              ))}
+                      <Chip
+                        label={member.role}
+                        size="small"
+                        color={member.role === "ADMIN" ? "primary" : "default"}
+                        variant="outlined"
+                        sx={{ textTransform: "capitalize" }}
+                      />
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </Stack>
           ) : (
             <Typography color="text.secondary">
               No hay miembros en este equipo
             </Typography>
           )}
+
+          <InvitationsList teamId={id!} />
         </>
       )}
     </Box>

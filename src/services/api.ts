@@ -36,7 +36,7 @@ const api: AxiosInstance = axios.create({
 
 let isRefreshing = false;
 
-let isLoggingOut = false;
+// let isLoggingOut = false;
 
 let refreshSubscribers: {
   resolve: (token: string) => void;
@@ -90,7 +90,7 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest =
       (error.config as AxiosRequestConfig & { _retry?: boolean }) || {};
-    const url = originalRequest.url || "";
+    // const url = originalRequest.url || "";
 
     pendingRequests--;
     if (pendingRequests <= 0) hideLoader();

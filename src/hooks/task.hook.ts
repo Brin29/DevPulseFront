@@ -7,10 +7,12 @@ export const taskServiceKey = {
   lists: () => [...taskServiceKey.all, "list"] as const,
 };
 
-export const useTasks = () => {
+export const useTasks = (teamId?: string) => {
   return useQuery({
-    queryKey: taskServiceKey.lists(),
-    queryFn: () => getTasks(),
+    queryKey: teamId
+      ? [...taskServiceKey.lists(), teamId]
+      : taskServiceKey.lists(),
+    queryFn: () => getTasks(teamId),
     select: (response) => response.data,
   });
 };
