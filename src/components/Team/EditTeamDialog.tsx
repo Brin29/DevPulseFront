@@ -73,6 +73,7 @@ export const EditTeamDialog: React.FC<EditTeamDialogProps> = ({ team }) => {
       </Button>
 
       <FormModal
+        title="Editar equipo"
         submitBtn="Editar"
         onSubmit={handleSubmit(onSubmit)}
         open={open}

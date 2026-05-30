@@ -1,18 +1,16 @@
-import { Box, Chip, Typography } from "@mui/material";
-import type { Task, TaskType, TaskPriority } from "../models/task.model";
+import { Box, Chip, Divider, Typography } from "@mui/material";
+import type { Task, TaskType, TaskPriority } from "../../models/task.model";
 
 const typeColors: Record<TaskType, string> = {
-  bug: "#e53935",
-  incident: "#fb8c00",
-  improvement: "#1e88e5",
-  task: "#43a047",
+  BUG: "#e53935",
+  FEAUTERE: "#fb8c00",
+  TASK: "#43a047",
 };
 
 const typeLabels: Record<TaskType, string> = {
-  bug: "Bug",
-  incident: "Incidente",
-  improvement: "Mejora",
-  task: "Tarea",
+  BUG: "Bug",
+  FEAUTERE: "Incidente",
+  TASK: "Tarea",
 };
 
 const priorityColors: Record<TaskPriority, string> = {
@@ -27,26 +25,35 @@ interface TaskCardProps {
   isDragging: boolean;
   onDragStart: (taskId: string) => void;
   onDragEnd: () => void;
+  onClick: () => void;
 }
 
-export const TaskCard = ({ task, isDragging, onDragStart, onDragEnd }: TaskCardProps) => {
+export const TaskCard = ({
+  task,
+  isDragging,
+  onDragStart,
+  onDragEnd,
+  onClick,
+}: TaskCardProps) => {
   return (
     <Box
       draggable
-      onDragStart={() => onDragStart(task.id)}
+      onDragStart={() => onDragStart(task._id)}
       onDragEnd={onDragEnd}
+      onClick={onClick}
       sx={{
         bgcolor: "#fff",
         borderRadius: 1,
         p: 1.5,
-        cursor: "grab",
+
         opacity: isDragging ? 0.4 : 1,
         boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
         transition: "box-shadow 0.15s, opacity 0.15s",
         "&:hover": {
           boxShadow: "0 3px 8px rgba(0,0,0,0.15)",
+          cursor: "pointer",
         },
-        "&:active": { cursor: "grabbing" },
+        // "&:active": { cursor: "grabbing" },
         userSelect: "none",
         border: "1px solid #dfe1e6",
       }}
@@ -57,13 +64,48 @@ export const TaskCard = ({ task, isDragging, onDragStart, onDragEnd }: TaskCardP
           fontWeight: 600,
           fontSize: "0.8125rem",
           color: "#172b4d",
-          mb: 1.5,
+          mb: 1,
+
           lineHeight: 1.4,
         }}
       >
         {task.title}
       </Typography>
-      <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap", alignItems: "center" }}>
+
+      <Divider />
+
+      <Typography
+        sx={{
+          fontSize: "0.8125rem",
+          color: "#172b4d",
+          my: 1.5,
+          lineHeight: 1.4,
+        }}
+      >
+        {task.description}
+      </Typography>
+
+      <Typography
+        variant="subtitle2"
+        sx={{
+          fontWeight: 600,
+          fontSize: "0.8125rem",
+          color: "#172b4d",
+          lineHeight: 1.4,
+        }}
+      >
+        {task.assigneeId.firstName + " " + task.assigneeId.lastName}
+      </Typography>
+
+      <Box
+        sx={{
+          mt: 1.5,
+          display: "flex",
+          gap: 0.5,
+          flexWrap: "wrap",
+          alignItems: "center",
+        }}
+      >
         <Chip
           label={typeLabels[task.type]}
           size="small"

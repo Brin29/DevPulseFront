@@ -4,7 +4,7 @@ export interface SendInvitationModel {
 }
 
 export interface Invitation {
-  id: string;
+  _id: string;
   email: string;
   role: string;
   status?: string;

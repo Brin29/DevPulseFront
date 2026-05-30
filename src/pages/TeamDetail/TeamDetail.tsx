@@ -115,9 +115,6 @@ export const TeamDetail = () => {
               {data.team.members.map((member: any) => {
 
                 const { userId: user  } = member;
-
-                console.log(user.firstName)
-
                 return (
                   <Card
                     key={user._id}

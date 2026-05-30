@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   Drawer,
   useMediaQuery,
@@ -18,12 +18,9 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import TaskIcon from "@mui/icons-material/TaskAlt";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import AddIcon from "@mui/icons-material/Add";
 import type { ReactNode } from "react";
 import { useTeamContext } from "../../context/TeamContext";
-// import { useTasks } from "../../hooks/task.hook";
-import { useState } from "react";
-import { CreateTaskDialog } from "../CreateTaskDialog";
+import { Group } from "@mui/icons-material";
 
 interface NavItem {
   label: string;
@@ -47,7 +44,6 @@ interface SidebarProps {
 const navItems: NavItem[] = [
   { label: "Dashboard", path: "/dashboard", icon: <DashboardIcon /> },
   { label: "Equipos", path: "/teams", icon: <GroupsIcon /> },
-  { label: "Tareas", path: "/tasks", icon: <TaskIcon /> },
 ];
 
 export const Sidebar = ({
@@ -55,13 +51,12 @@ export const Sidebar = ({
   mobileOpen,
   onMobileClose,
 }: SidebarProps) => {
+  const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { selectedTeam, setSelectedTeam } = useTeamContext();
-  // const { data: tasks, isLoading: tasksLoading } = useTasks(selectedTeam?.id);
-  const [createTaskOpen, setCreateTaskOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -112,98 +107,98 @@ export const Sidebar = ({
             {selectedTeam.name}
           </Typography>
         ) : null}
-        <Button
-          variant="contained"
-          size="small"
-          fullWidth
-          startIcon={<AddIcon />}
-          onClick={() => setCreateTaskOpen(true)}
-          sx={{
-            textTransform: "none",
-            fontSize: "0.75rem",
-            mb: 2,
-            minHeight: 32,
-            ...(collapsed && !isMobile
-              ? { minWidth: 0, "& .MuiButton-startIcon": { m: 0 } }
-              : {}),
-          }}
-        >
-          {(collapsed && isMobile) || !collapsed ? "Nueva Tarea" : null}
-        </Button>
       </Box>
 
-      {/* {tasksLoading ? (
-        <Box sx={{ textAlign: "center", py: 4 }}>
-          <CircularProgress size={20} />
-        </Box>
-      ) : tasks && tasks.length > 0 ? (
-        <Box sx={{ flex: 1, overflow: "auto", px: collapsed && !isMobile ? 1 : 2 }}>
-          {tasks.map((task: any) => (
-            <Box
-              key={task.id}
-              sx={{
-                p: 1,
-                mb: 0.5,
-                borderRadius: 1,
-                bgcolor: "grey.50",
-                border: "1px solid",
-                borderColor: "divider",
-                cursor: "pointer",
-                "&:hover": { bgcolor: "grey.100" },
-              }}
-            >
-              {(collapsed && isMobile) || !collapsed ? (
-                <>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontWeight: 600,
-                      display: "block",
-                      fontSize: "0.75rem",
-                      lineHeight: 1.3,
-                      mb: 0.5,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {task.title}
-                  </Typography>
-                  <Chip
-                    label={task.status?.replace("_", " ")}
-                    size="small"
-                    sx={{
-                      fontSize: "0.6rem",
-                      height: 18,
-                      bgcolor: statusColors[task.status] || "#5e6c84",
-                      color: "#fff",
-                      fontWeight: 600,
-                    }}
-                  />
-                </>
-              ) : null}
-            </Box>
-          ))}
-        </Box>
-      ) : (
-        <Box sx={{ px: 2, py: 4, textAlign: "center" }}>
-          <Typography
-            variant="caption"
-            color="text.secondary"
+      <List disablePadding>
+        <ListItem disablePadding>
+          <ListItemButton
+            selected={isActive(`/teams/${id}`)}
+            onClick={() => handleNavClick(`/teams/${id}`)}
             sx={{
-              opacity: isMobile ? 1 : collapsed ? 0 : 1,
-              transition: "opacity 0.2s",
+              minHeight: 48,
+              justifyContent: collapsed && !isMobile ? "center" : "initial",
+              px: collapsed && !isMobile ? 1 : 2,
+              mx: 1,
+              borderRadius: 1,
+              mb: 0.5,
+              "&.Mui-selected": {
+                backgroundColor: "primary.bg",
+                "&:hover": { backgroundColor: "primary.bg" },
+              },
             }}
           >
-            No hay tareas
-          </Typography>
-        </Box>
-      )} */}
-
-      <CreateTaskDialog
-        open={createTaskOpen}
-        onClose={() => setCreateTaskOpen(false)}
-      />
+            <ListItemIcon
+              sx={{
+                minWidth: collapsed && !isMobile ? 0 : 40,
+                justifyContent: "center",
+                color: isActive(`/teams/${id}`) ? "primary.main" : "grey.400",
+              }}
+            >
+              <Group />
+            </ListItemIcon>
+            {(collapsed && isMobile) || !collapsed ? (
+              <ListItemText
+                primary={"Equipo"}
+                sx={{
+                  opacity: isMobile ? 1 : collapsed ? 0 : 1,
+                  transition: "opacity 0.2s",
+                  "& .MuiListItemText-primary": {
+                    fontSize: "14px",
+                    fontWeight: isActive(`/teams/${id}`) ? 600 : 400,
+                    color: isActive(`/teams/${id}`)
+                      ? "primary.main"
+                      : "grey.600",
+                  },
+                }}
+              />
+            ) : null}
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton
+            selected={isActive(`/tasks/${id}`)}
+            onClick={() => handleNavClick(`/tasks/${id}`)}
+            sx={{
+              minHeight: 48,
+              justifyContent: collapsed && !isMobile ? "center" : "initial",
+              px: collapsed && !isMobile ? 1 : 2,
+              mx: 1,
+              borderRadius: 1,
+              mb: 0.5,
+              "&.Mui-selected": {
+                backgroundColor: "primary.bg",
+                "&:hover": { backgroundColor: "primary.bg" },
+              },
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: collapsed && !isMobile ? 0 : 40,
+                justifyContent: "center",
+                color: isActive(`/tasks/${id}`) ? "primary.main" : "grey.400",
+              }}
+            >
+              <TaskIcon />
+            </ListItemIcon>
+            {(collapsed && isMobile) || !collapsed ? (
+              <ListItemText
+                primary={"Tareas"}
+                sx={{
+                  opacity: isMobile ? 1 : collapsed ? 0 : 1,
+                  transition: "opacity 0.2s",
+                  "& .MuiListItemText-primary": {
+                    fontSize: "14px",
+                    fontWeight: isActive(`/tasks/${id}`) ? 600 : 400,
+                    color: isActive(`/tasks/${id}`)
+                      ? "primary.main"
+                      : "grey.600",
+                  },
+                }}
+              />
+            ) : null}
+          </ListItemButton>
+        </ListItem>
+      </List>
     </Box>
   ) : (
     <List disablePadding>

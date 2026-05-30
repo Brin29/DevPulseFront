@@ -19,7 +19,8 @@ export const MagicLogin = () => {
     }
 
     verfifyMagicLink.mutate((payload), {
-      onSuccess: () => {
+      onSuccess: (data: any) => {
+        localStorage.setItem("authMe", JSON.stringify(data))
         navigate("/dashboard")
       },
       onError: (error) => {

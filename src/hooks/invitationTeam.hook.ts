@@ -1,19 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { invitationTeamService } from "../services/invitationTeam.service";
 import type { SendInvitationModel } from "../models/invitationTeams.models";
+import type { GetParams } from "../models/parms.model";
 
 export const invitationTeamServiceKey = {
   all: ["invitations"] as const,
   lists: () => [...invitationTeamServiceKey.all, "list"] as const,
-  list: () => [...invitationTeamServiceKey.lists()] as const,
+  list: (params: GetParams, id: string) =>
+    [...invitationTeamServiceKey.lists(), params, id] as const,
   details: () => [...invitationTeamServiceKey.all, "detail"] as const,
   detail: (id: string) => [...invitationTeamServiceKey.details(), id] as const,
 };
 
-export const useInvitationsTeam = (id: string) => {
+export const useInvitationsTeam = (params: GetParams, id: string) => {
   return useQuery({
-    queryKey: invitationTeamServiceKey.detail(id!),
-    queryFn: () => invitationTeamService.fetchInvitationByIdTeam(id!),
+    queryKey: invitationTeamServiceKey.list(params, id!),
+    queryFn: () => invitationTeamService.fetchInvitationByIdTeam(params, id!),
     enabled: !!id,
     refetchOnWindowFocus: false,
     staleTime: Infinity,
@@ -23,6 +25,14 @@ export const useInvitationsTeam = (id: string) => {
 export const useTeamInvitationMutations = () => {
   const queryClient = useQueryClient();
 
+  // const invalidateInvitations = async () => {
+  //   if (!teamId) return;
+
+  //   await queryClient.invalidateQueries({
+  //     queryKey: invitationTeamServiceKey.detail(teamId),
+  //   });
+  // };
+
   const sendInvitationMutation = useMutation({
     mutationFn: ({
       id,
@@ -31,9 +41,12 @@ export const useTeamInvitationMutations = () => {
       id: string;
       payload: SendInvitationModel;
     }) => invitationTeamService.sendInvitation(id, payload),
+    // onSuccess: async () => {
+    //   await invalidateInvitations();
+    // },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: invitationTeamServiceKey.lists(),
+        queryKey: invitationTeamServiceKey.all,
       });
     },
   });
@@ -43,16 +56,29 @@ export const useTeamInvitationMutations = () => {
       invitationTeamService.acceptInvitation(token),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: invitationTeamServiceKey.lists(),
+        queryKey: invitationTeamServiceKey.all,
+      });
+    },
+  });
+
+  const cancelInvitationMutation = useMutation({
+    mutationFn: (token: string) =>
+      invitationTeamService.cancelInvitation(token),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: invitationTeamServiceKey.all,
       });
     },
   });
 
   const deleteInvitationMutation = useMutation({
     mutationFn: (id: string) => invitationTeamService.deleteInvitation(id),
+    // onSuccess: async () => {
+    //   await invalidateInvitations();
+    // },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: invitationTeamServiceKey.lists(),
+        queryKey: invitationTeamServiceKey.all,
       });
     },
   });
@@ -60,6 +86,7 @@ export const useTeamInvitationMutations = () => {
   return {
     sendInvitation: sendInvitationMutation,
     acceptInvitation: acceptInvitationMutation,
+    cancelInvitation: cancelInvitationMutation,
     deleteInvitation: deleteInvitationMutation,
   };
 };

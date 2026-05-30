@@ -5,6 +5,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  type Breakpoint,
 } from "@mui/material";
 
 export interface ModalProps {
@@ -15,6 +16,7 @@ export interface ModalProps {
   onClick?: () => void;
   title: string;
   children: React.ReactElement;
+  maxWidth?: Breakpoint;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -25,9 +27,10 @@ export const Modal: React.FC<ModalProps> = ({
   nameBtn = "Enviar", 
   title,
   children,
+  maxWidth = "sm"
 }) => {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog maxWidth={maxWidth} open={open} onClose={onClose}  fullWidth>
       <DialogTitle sx={{ fontWeight: 600 }}>{title}</DialogTitle>
       <Box>
         <DialogContent>{children}</DialogContent>

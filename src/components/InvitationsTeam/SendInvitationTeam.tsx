@@ -1,4 +1,12 @@
-import { Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, Stack } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+} from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import type { SendInvitationModel } from "../../models/invitationTeams.models";
 import { useState } from "react";
@@ -51,6 +59,7 @@ export const SendInvitationTeam = () => {
       </Button>
 
       <FormModal
+        title="Enviar invitacion"
         submitBtn="Enviar"
         open={open}
         onClose={handleClose}

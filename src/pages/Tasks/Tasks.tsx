@@ -1,13 +1,21 @@
-import { useState } from "react";
-import { Box, Typography, Button } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import { useTasks } from "../../hooks/task.hook";
-import { KanbanBoard } from "../../components/KanbanBoard";
-import { CreateTaskDialog } from "../../components/CreateTaskDialog";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { Box, Typography } from "@mui/material";
+import { useTeam } from "../../hooks/team.hook";
+import { useTeamContext } from "../../context/TeamContext";
+import { KanbanBoard } from "../../components/Task/KanbanBoard";
 
 export const Tasks = () => {
-  const [open, setOpen] = useState(false);
-  const { data: tasks, isLoading } = useTasks();
+  const { id } = useParams<{ id: string }>();
+  const { data: teamData } = useTeam(id!);
+  const { setSelectedTeam } = useTeamContext();
+
+  useEffect(() => {
+    if (teamData?.team) {
+      setSelectedTeam({ id: teamData.team.id, name: teamData.team.name });
+    }
+    return () => setSelectedTeam(null);
+  }, [teamData, setSelectedTeam]);
 
   return (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
@@ -22,27 +30,8 @@ export const Tasks = () => {
         <Typography variant="h4" sx={{ fontWeight: 600 }}>
           Tareas
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setOpen(true)}
-        >
-          Crear Tarea
-        </Button>
       </Box>
-
-      {isLoading ? (
-        <Typography color="text.secondary">Cargando tareas...</Typography>
-      ) : tasks && tasks.length > 0 ? (
-        <KanbanBoard tasks={tasks} />
-      ) : (
-        <Typography color="text.secondary">
-          No hay tareas todavía. Crea tu primera tarea.
-        </Typography>
-      )}
-
-      <CreateTaskDialog open={open} onClose={() => setOpen(false)} />
-      <KanbanBoard tasks={[]}/>
+      <KanbanBoard />
     </Box>
   );
 };

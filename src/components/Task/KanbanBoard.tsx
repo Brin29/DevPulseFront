@@ -1,8 +1,17 @@
 import { useState, useMemo } from "react";
-import { Box, Typography } from "@mui/material";
-import type { Task, TaskStatus } from "../models/task.model";
-import { TaskCard } from "./TaskCard";
-import { useUpdateTaskStatus } from "../hooks/task.hook";
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
+import type { Task, TaskStatus } from "../../models/task.model";
+import { TaskCard } from "../Task/TaskCard";
+import { TaskDetailDialog } from "../Task/TaskDetailDialog";
+import { CreateTaskDialog } from "../Task/CreateTaskDialog";
+import { useTaskMutations, useTasks } from "../../hooks/task.hook";
+import { useParams } from "react-router-dom";
+import { Modal } from "../Modals/Modal";
 
 const COLUMNS: { status: TaskStatus; label: string; color: string }[] = [
   { status: "OPEN", label: "OPEN", color: "#5e6c84" },
@@ -11,14 +20,28 @@ const COLUMNS: { status: TaskStatus; label: string; color: string }[] = [
   { status: "CLOSED", label: "CLOSED", color: "#42526e" },
 ];
 
-interface KanbanBoardProps {
-  tasks: Task[];
-}
-
-export const KanbanBoard = ({ tasks }: KanbanBoardProps) => {
+export const KanbanBoard = () => {
+  const { id } = useParams<{ id: string }>();
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
   const [draggedOverCol, setDraggedOverCol] = useState<TaskStatus | null>(null);
-  const updateStatusMutation = useUpdateTaskStatus();
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [successDeleteModa, setSuccessDeleteModal] = useState(false);
+  // const [snackbarOpen, setSnackbarOpen] = useState(false);
+  // const [snackbarMessage, setSnackbarMessage] = useState("");
+  const { updateStatus } = useTaskMutations();
+  
+  const {
+    data: dataTask,
+    isLoading,
+    isError,
+    error: queryError,
+  } = useTasks(id!!, {
+    status: undefined,
+    priority: undefined,
+    assigneedId: undefined,
+  });
+
+  const tasks: Task[] = dataTask?.tasks ?? [];
 
   const groupedTasks = useMemo(() => {
     const groups: Record<TaskStatus, Task[]> = {
@@ -59,10 +82,14 @@ export const KanbanBoard = ({ tasks }: KanbanBoardProps) => {
   };
 
   const handleDrop = (status: TaskStatus) => {
+    const payload = {
+      status: status
+    }
+
     if (draggedTaskId) {
-      const task = tasks.find((t) => t.id === draggedTaskId);
+      const task = tasks.find((t) => t._id === draggedTaskId);
       if (task && task.status !== status) {
-        updateStatusMutation.mutate({ taskId: draggedTaskId, status });
+        updateStatus.mutate({ taskId: draggedTaskId, teamId: id!!, payload});
       }
     }
     setDraggedTaskId(null);
@@ -74,11 +101,23 @@ export const KanbanBoard = ({ tasks }: KanbanBoardProps) => {
       sx={{
         display: "flex",
         gap: 2,
-        height: "calc(100vh - 200px)",
-        overflow: "auto",
+        // height: "calc(100vh - 200px)",
+        // overflow: "auto",
         px: 0.5,
       }}
     >
+      {isLoading && (
+        <Box sx={{ textAlign: "center", py: 4 }}>
+          <CircularProgress size={24} />
+        </Box>
+      )}
+
+      {isError && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          Error: {queryError?.message || "Algo salió mal"}
+        </Alert>
+      )}
+
       {COLUMNS.map((col) => (
         <Box
           key={col.status}
@@ -91,7 +130,8 @@ export const KanbanBoard = ({ tasks }: KanbanBoardProps) => {
             flexDirection: "column",
             transition: "background-color 0.15s",
             border: "2px solid transparent",
-            borderColor: draggedOverCol === col.status ? col.color : "transparent",
+            borderColor:
+              draggedOverCol === col.status ? col.color : "transparent",
             // bgcolor: draggedOverCol === col.status ? "#e3e7ed" : "#f4f5f7",
           }}
           onDragOver={(e) => handleDragOver(e, col.status)}
@@ -149,7 +189,7 @@ export const KanbanBoard = ({ tasks }: KanbanBoardProps) => {
           <Box
             sx={{
               flex: 1,
-              overflowY: "auto",
+              // overflowY: "auto",
               display: "flex",
               flexDirection: "column",
               gap: 1,
@@ -157,18 +197,53 @@ export const KanbanBoard = ({ tasks }: KanbanBoardProps) => {
               minHeight: 100,
             }}
           >
+            {col.status === "OPEN" && <CreateTaskDialog />}
+            {groupedTasks[col.status].length === 0 && (
+              <Typography
+                color="text.secondary"
+                variant="body2"
+                sx={{ textAlign: "center", py: 2 }}
+              >
+                No hay tareas
+              </Typography>
+            )}
             {groupedTasks[col.status].map((task) => (
               <TaskCard
-                key={task.id}
-                task={task}
-                isDragging={draggedTaskId === task.id}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
+              key={task._id}
+              task={task}
+              isDragging={draggedTaskId === task._id}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              onClick={() => setSelectedTask(task)}
               />
             ))}
+            
           </Box>
         </Box>
       ))}
+
+      {selectedTask?._id && (
+        <TaskDetailDialog
+          taskId={selectedTask?._id}
+          open={!!selectedTask}
+          onClose={() => setSelectedTask(null)}
+          onTaskDelete={() => {
+            setSelectedTask(null);
+            setSuccessDeleteModal(true);
+          }}
+        />
+      )}
+
+      {successDeleteModa && (
+        <Modal
+          title="Tarea eliminada"
+          open={successDeleteModa}
+          onClose={() => setSuccessDeleteModal(false)}
+        >
+          <Typography>Tarea eliminada correctamente</Typography>
+        </Modal>
+      )}
+
     </Box>
   );
 };

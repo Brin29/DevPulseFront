@@ -2,11 +2,12 @@ import { Button, Box, Typography, Link } from "@mui/material";
 import { useForm } from "react-hook-form";
 import type { SignInRequest } from "../../models/auth.model";
 import { Input, InputType } from "../../components/Input";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { authUserMutations } from "../../hooks/auth.hook";
 
 export const SignIn = () => {
   const { login } = authUserMutations();
+  const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
   const { handleSubmit, control } = useForm<SignInRequest>({
@@ -16,6 +17,9 @@ export const SignIn = () => {
     },
   });
 
+  const redirect =
+    searchParams.get("redirect") ?? localStorage.getItem("auth_redirect");
+
   const onSubmit = async (data: SignInRequest) => {
     const payload = {
       ...data,
@@ -23,8 +27,9 @@ export const SignIn = () => {
 
     login.mutate(payload, {
       onSuccess: (response: any) => {
-        navigate("/dashboard");
+        navigate(redirect || "/dashboard");
         localStorage.setItem("authMe", JSON.stringify(response));
+        localStorage.removeItem("auth_redirect");
       },
       onError: (error: any) => {
         console.log(error);

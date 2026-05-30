@@ -9,10 +9,15 @@ import {
   Card,
   CardContent,
   Tooltip,
+  Pagination,
+  TablePagination,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EmailIcon from "@mui/icons-material/Email";
-import { useInvitationsTeam, useTeamInvitationMutations } from "../../hooks/invitationTeam.hook";
+import {
+  useInvitationsTeam,
+  useTeamInvitationMutations,
+} from "../../hooks/invitationTeam.hook";
 import type { Invitation } from "../../models/invitationTeams.models";
 import { useState } from "react";
 import { Modal } from "../Modals/Modal";
@@ -22,19 +27,68 @@ interface InvitationsListProps {
 }
 
 export const InvitationsList = ({ teamId }: InvitationsListProps) => {
-  const { data, isLoading, isError, error: queryError } = useInvitationsTeam(teamId);
+  const [open, setOpen] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+    
+  const {
+    data,
+    isLoading,
+    isError,
+    error: queryError,
+  } = useInvitationsTeam(
+    {
+      page,
+      limit: pageSize,
+    },
+    teamId,
+  );
   const { deleteInvitation } = useTeamInvitationMutations();
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
-  const invitations: Invitation[] = Array.isArray(data) ? data : data?.invitations ?? [];
+  const invitations: Invitation[] = Array.isArray(data)
+    ? data
+    : (data?.invitations ?? []);
+
+  const totalCount = data?.total;
+
+
+  const openDeleteModal = (id: string) => {
+    console.log(id);
+    setDeleteTarget(id);
+    setOpen(true);
+  };
 
   const handleDelete = () => {
     if (deleteTarget) {
       deleteInvitation.mutate(deleteTarget, {
-        onSuccess: () => setDeleteTarget(null),
+        onSuccess: () => {
+          setOpen(false);
+          setSuccessModal(true);
+        },
+        onError: () => {
+          setOpen(false);
+          setErrorModal(true);
+        },
       });
     }
+    //   // if (deleteTarget) {
+    //     // deleteInvitation.mutate(deleteTarget, {
+    //       // onSuccess: () => setDeleteTarget(null),
+    //     });
+    //   }
   };
+
+  const onPageSizeChange = (s: number) => {
+    setPageSize(s);
+    setPage(1);
+  };
+
+  const onPageChange = (s: number) => {
+    setPage(s)
+  }
 
   return (
     <Box sx={{ mt: 4 }}>
@@ -63,7 +117,7 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
       {invitations.length > 0 && (
         <Stack spacing={1}>
           {invitations.map((inv) => (
-            <Card key={inv.id} variant="outlined" sx={{ borderRadius: 2 }}>
+            <Card key={inv._id} variant="outlined" sx={{ borderRadius: 2 }}>
               <CardContent
                 sx={{
                   display: "flex",
@@ -95,7 +149,9 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
                   />
                   {inv.status && (
                     <Chip
-                      label={inv.status === "pending" ? "Pendiente" : inv.status}
+                      label={
+                        inv.status === "pending" ? "Pendiente" : inv.status
+                      }
                       size="small"
                       color={inv.status === "pending" ? "warning" : "success"}
                     />
@@ -104,7 +160,7 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
                     <IconButton
                       size="small"
                       color="error"
-                      onClick={() => setDeleteTarget(inv.id)}
+                      onClick={() => openDeleteModal(String(inv._id))}
                     >
                       <DeleteIcon fontSize="small" />
                     </IconButton>
@@ -116,9 +172,43 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
         </Stack>
       )}
 
+      {data && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            mt: 4,
+            mb: 2,
+            flexWrap: "wrap",
+            gap: 1,
+          }}
+        >
+          <Pagination
+            color="primary"
+            count={Math.ceil(totalCount / pageSize)}
+            page={page}
+            onChange={(_, v) => onPageChange(v)}
+          />
+          <TablePagination
+            component="div"
+            count={totalCount}
+            page={page - 1}
+            onPageChange={() => {}}
+            rowsPerPage={pageSize}
+            onRowsPerPageChange={(e) => onPageSizeChange(parseInt(e.target.value, 10))}
+            rowsPerPageOptions={[5, 10, 15]}
+            labelRowsPerPage=""
+            ActionsComponent={() => null}
+            labelDisplayedRows={() => ""}
+            sx={{ border: "none" }}
+          />
+        </Box>
+      )}
+
       <Modal
-        open={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        open={open}
+        onClose={() => setOpen(false)}
         title="Eliminar invitación"
         sendInfo
         nameBtn="Eliminar"
@@ -128,6 +218,26 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
           ¿Estás seguro de que deseas eliminar esta invitación?
         </Typography>
       </Modal>
+
+      {successModal && (
+        <Modal
+          title="Creación Exitosa"
+          open={successModal}
+          onClose={() => setSuccessModal(false)}
+        >
+          <Typography>La eliminación fue exitosa</Typography>
+        </Modal>
+      )}
+
+      {errorModal && (
+        <Modal
+          title="Ocurrio un error"
+          open={errorModal}
+          onClose={() => setErrorModal(false)}
+        >
+          <Typography>Ocurrio un error en la eliminación</Typography>
+        </Modal>
+      )}
     </Box>
   );
 };

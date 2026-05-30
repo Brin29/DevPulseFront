@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { matchPath, Navigate, useLocation } from "react-router-dom";
 
 const RouteGuard = ({ children }: { children: JSX.Element }) => {
   const location = useLocation();
@@ -11,13 +11,19 @@ const RouteGuard = ({ children }: { children: JSX.Element }) => {
     "/verify-code",
     "/detected-account",
     "/magic-login",
+    "/teams/invitations/:token/accept",
   ];
 
-  if (publicRoutes.includes(location.pathname)) {
+  const isPublicRoute = publicRoutes.some((route) =>
+    matchPath(route, location.pathname),
+  );
+
+  if (isPublicRoute) {
     return children;
   }
 
   const authMeStr = localStorage.getItem("authMe");
+
   if (!authMeStr) {
     console.warn("⚠️ No hay sesión activa, redirigiendo a inicio de sesión");
     return <Navigate to="/sign-in" replace />;

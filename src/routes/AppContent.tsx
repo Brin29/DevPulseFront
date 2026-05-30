@@ -12,6 +12,7 @@ import { Layout } from "../components/Layout/Layout";
 import { Teams } from "../pages/Teams/Teams";
 import { TeamDetail } from "../pages/TeamDetail/TeamDetail";
 import { Tasks } from "../pages/Tasks/Tasks";
+import { AcceptInvitationPage } from "../pages/TeamInvitation/AcceptInvitationPage";
 
 export const AppContent = () => {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ export const AppContent = () => {
           path="teams"
           element={
             <RouteGuard>
-              <Teams/>
+              <Teams />
             </RouteGuard>
           }
         />
@@ -76,11 +77,9 @@ export const AppContent = () => {
             </RouteGuard>
           }
         />
-      </Route>
 
-      <Route element={<Layout />}>
         <Route
-          path="tasks"
+          path="tasks/:id"
           element={
             <RouteGuard>
               <Tasks />
@@ -88,6 +87,11 @@ export const AppContent = () => {
           }
         />
       </Route>
+
+      <Route
+        path="teams/invitations/:token/accept"
+        element={<AcceptInvitationPage />}
+      />
     </Routes>
   );
 };
