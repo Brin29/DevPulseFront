@@ -42,7 +42,7 @@ export const taskService = {
     api.get(`/teams/${teamId}/tasks/${taskId}/comments`).then((r) => r.data),
 
   updateComment: (teamId: string, taskId: string, commentId: string, payload: UpdateTaskCommentRequest) => 
-    sendRequest<UpdateTaskCommentRequest, { id: string }>(`/teams/${teamId}/tasks/${taskId}/comments/${commentId}`, payload).then((r) => r.data),
+    sendRequest<UpdateTaskCommentRequest, { id: string }>(`/teams/${teamId}/tasks/${taskId}/comments/${commentId}`, payload, undefined, "put").then((r) => r.data),
 
   deleteComment: (teamId: string, taskId: string, commentId: string,) => 
     api.delete(`/teams/${teamId}/tasks/${taskId}/comments/${commentId}`).then((r) => r.data)

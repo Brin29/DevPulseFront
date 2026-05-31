@@ -12,19 +12,16 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import type {
-  TaskType,
-  TaskPriority,
-} from "../../models/task.model";
+import type { TaskType, TaskPriority } from "../../models/task.model";
 import {
   useTask,
   useTaskMutations,
-  useComments,
-  useCommentMutations,
-  useTaskFormParams,
+  // useComments,
+  // useCommentMutations,
+  // useTaskFormParams,
 } from "../../hooks/task.hook";
 import { useParams } from "react-router-dom";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 
 import {
   toLocaleDate,
@@ -32,8 +29,10 @@ import {
 } from "../../utilities/toLocaleDate";
 import { DeleteTask } from "./DeleteTask";
 import { EditTask } from "./EditTask";
-import { CommentItem } from "../Comments/CommentItem";
-import { CommentEditor } from "../Comments/CommentEditor";
+// import { CommentItem } from "../Comments/CommentItem";
+// import { CommentEditor } from "../Comments/CommentEditor";
+// import { Controller } from "react-hook-form";
+import { CreateCommentTask } from "./CreateCommentTask";
 
 const typeColors: Record<TaskType, string> = {
   BUG: "#e53935",
@@ -87,76 +86,6 @@ export const TaskDetailDialog = ({
     error: queryError,
   } = useTask(taskId!!, teamId!!);
 
-  const { data: commentsData, isLoading: commentsLoading } = useComments(
-    teamId!!,
-    taskId!!,
-  );
-  const { data: paramForm } = useTaskFormParams(teamId!!);
-  const { create: createComment, edit: editComment, delete: deleteComment } =
-    useCommentMutations();
-
-  const authMeStr = localStorage.getItem("authMe");
-  const authMe = authMeStr ? JSON.parse(authMeStr) : null;
-  const currentUserId: string = authMe?.data?.user?.id || "";
-
-  const comments = useMemo(() => {
-    if (!commentsData) return [];
-    const raw = Array.isArray(commentsData)
-      ? commentsData
-      : commentsData?.comments || commentsData?.data || [];
-    return raw.map((c: any) => ({
-      id: c._id,
-      author: {
-        id: c.author?._id || c.userId?._id || "",
-        name: c.author
-          ? `${c.author.firstName} ${c.author.lastName}`
-          : c.userId
-            ? `${c.userId.firstName} ${c.userId.lastName}`
-            : "Unknown",
-        avatar: c.author?.avatar || c.userId?.avatar,
-      },
-      content: c.content,
-      createdAt: new Date(c.createdAt),
-      editedAt:
-        c.updatedAt !== c.createdAt ? new Date(c.updatedAt || c.editedAt) : undefined,
-    }));
-  }, [commentsData]);
-
-  const mentionUsers = useMemo(
-    () =>
-      paramForm?.members?.map((m: any) => ({
-        id: m.userId._id,
-        name: `${m.userId.firstName} ${m.userId.lastName}`,
-        avatar: m.userId.avatar,
-      })) || [],
-    [paramForm],
-  );
-
-  const handleCreateComment = (html: string) => {
-    createComment.mutate({
-      teamId: teamId!!,
-      taskId: taskId!!,
-      payload: { content: html },
-    });
-  };
-
-  const handleEditComment = (commentId: string, html: string) => {
-    editComment.mutate({
-      teamId: teamId!!,
-      taskId: taskId!!,
-      commentId,
-      payload: { content: html },
-    });
-  };
-
-  const handleDeleteComment = (commentId: string) => {
-    deleteComment.mutate({
-      teamId: teamId!!,
-      taskId: taskId!!,
-      commentId,
-    });
-  };
-
   const handleDelete = () => {
     deleteTask.mutate(
       { teamId: teamId!!, taskId: dataTask.task._id },
@@ -201,16 +130,16 @@ export const TaskDetailDialog = ({
             >
               {dataTask.task.title}
               <Box sx={{ display: "flex", gap: 0.5 }}>
-                  <>
-                  <EditTask taskData={dataTask.task}/>
-                    <DeleteTask
-                      open={deleteOpen}
-                      setOpen={setDeleteOpen}
-                      setErrorModal={setErrorModal}
-                      errorModal={errorModal}
-                      onDelete={handleDelete}
-                    />
-                  </>
+                <>
+                  <EditTask taskData={dataTask.task} />
+                  <DeleteTask
+                    open={deleteOpen}
+                    setOpen={setDeleteOpen}
+                    setErrorModal={setErrorModal}
+                    errorModal={errorModal}
+                    onDelete={handleDelete}
+                  />
+                </>
                 <IconButton onClick={onClose} size="small">
                   <CloseIcon />
                 </IconButton>
@@ -242,53 +171,8 @@ export const TaskDetailDialog = ({
                       >
                         Comentarios
                       </Typography>
-
-                      {commentsLoading && (
-                        <Box sx={{ textAlign: "center", py: 2 }}>
-                          <CircularProgress size={20} />
-                        </Box>
-                      )}
-
-                      {!commentsLoading && (
-                        <Box sx={{ mb: 2 }}>
-                          {comments.length === 0 ? (
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              sx={{ mb: 2 }}
-                            >
-                              No hay comentarios aún
-                            </Typography>
-                          ) : (
-                            <Box
-                              sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: 0,
-                              }}
-                            >
-                              {comments.map((comment: any) => (
-                                <CommentItem
-                                  key={comment.id}
-                                  comment={comment}
-                                  currentUserId={currentUserId}
-                                  allUsers={mentionUsers}
-                                  onEdit={handleEditComment}
-                                  onDelete={handleDeleteComment}
-                                />
-                              ))}
-                            </Box>
-                          )}
-                        </Box>
-                      )}
-
-                      <CommentEditor
-                        placeholder="Escribe un comentario… usa @ para mencionar a alguien"
-                        users={mentionUsers}
-                        onSubmit={handleCreateComment}
-                        maxLength={500}
-                      />
                     </Box>
+                      <CreateCommentTask teamId={teamId!!} taskId={taskId!!} />
                   </Box>
                 </Grid>
 
@@ -437,7 +321,6 @@ export const TaskDetailDialog = ({
                   </Box>
                 </Grid>
               </Grid>
-              {/* )} */}
             </DialogContent>
           </>
         )}

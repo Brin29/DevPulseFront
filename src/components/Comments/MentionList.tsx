@@ -1,6 +1,7 @@
 import {
   forwardRef,
   useEffect,
+  useLayoutEffect,
   useImperativeHandle,
   useState,
   useRef,
@@ -41,17 +42,16 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
     // Reset selection whenever the filtered list changes
     useEffect(() => setSelectedIndex(0), [items]);
 
-    // Keep a virtual anchor element positioned at the @ character
-    useEffect(() => {
+    // Keep the anchor at the @ character (position: fixed = viewport-relative, so no scroll offsets)
+    useLayoutEffect(() => {
       if (!anchorRef.current || !clientRect) return;
       const rect = clientRect();
       if (!rect) return;
-      // Position the invisible anchor div where the cursor is
-      anchorRef.current.style.top = `${rect.top + window.scrollY}px`;
-      anchorRef.current.style.left = `${rect.left + window.scrollX}px`;
+      anchorRef.current.style.top = `${rect.top}px`;
+      anchorRef.current.style.left = `${rect.left}px`;
       anchorRef.current.style.width = `${rect.width}px`;
       anchorRef.current.style.height = `${rect.height}px`;
-    }, [clientRect]);
+    }, [clientRect, items]);
 
     const selectItem = (index: number) => {
       const item = items[index];
@@ -81,10 +81,10 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
 
     return (
       <>
-        {/* Virtual anchor positioned at the @ cursor */}
+        {/* Virtual anchor at the @ cursor (fixed = viewport-relative coords) */}
         <Box
           ref={anchorRef}
-          sx={{ position: "absolute", pointerEvents: "none" }}
+          sx={{ position: "fixed", pointerEvents: "none" }}
         />
 
         <Popper

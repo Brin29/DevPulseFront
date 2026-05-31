@@ -8,18 +8,21 @@ import {
   Menu,
   MenuItem,
   Divider,
-  Chip,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import ReplyIcon from "@mui/icons-material/Reply";
 import { formatDistanceToNow } from "date-fns";
 import { CommentPreview } from "./CommentPreview";
 import { CommentEditor } from "./CommentEditor";
 import type { JSONContent } from "@tiptap/react";
+import type {
+  CreateTaskCommentRequest,
+  UpdateTaskCommentRequest,
+} from "../../models/task.model";
+import { useForm } from "react-hook-form";
+import { useCommentMutations } from "../../hooks/task.hook";
+import { Modal } from "../Modals/Modal";
 
 interface User {
   id: string;
@@ -37,6 +40,9 @@ interface Comment {
 }
 
 interface CommentItemProps {
+  taskId: string;
+  teamId: string;
+  commentId: string;
   comment: Comment;
   currentUserId: string;
   allUsers?: User[];
@@ -48,39 +54,72 @@ interface CommentItemProps {
 }
 
 export function CommentItem({
+  taskId,
+  teamId,
+  commentId,
   comment,
   currentUserId,
   allUsers = [],
-  onEdit,
-  onDelete,
-  onReply,
-  onReact,
   depth = 0,
 }: CommentItemProps) {
+  const { edit, delete: deleteComment } = useCommentMutations();
   const [isEditing, setIsEditing] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-
+  const [successDeleteModal, setSuccessDeleteModal] = useState(false);
+  const [errorDeleteModal, setErrorDeleteModal] = useState(false);
   const isOwner = comment.author.id === currentUserId;
   const timeAgo = formatDistanceToNow(comment.createdAt, { addSuffix: true });
   const isEdited = !!comment.editedAt;
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: {},
+  } = useForm<CreateTaskCommentRequest>({
+    defaultValues: {
+      content: "",
+    },
+  });
+
+  const onSubmit = (data: UpdateTaskCommentRequest) => {
+    edit.mutate(
+      { teamId: teamId, taskId: taskId, commentId: commentId, payload: data },
+      {
+        onSuccess: () => {
+          handleMenuClose();
+          setIsEditing(false);
+          reset();
+        },
+        onError: () => {
+          handleMenuClose();
+          reset();
+        },
+      },
+    );
+  };
 
   const handleMenuOpen = (e: React.MouseEvent<HTMLElement>) =>
     setMenuAnchor(e.currentTarget);
   const handleMenuClose = () => setMenuAnchor(null);
 
   const handleDelete = () => {
-    handleMenuClose();
-    onDelete?.(comment.id);
+    deleteComment.mutate(
+      { teamId, taskId, commentId },
+      {
+        onSuccess: () => {
+          setSuccessDeleteModal(true);
+        },
+        onError: () => {
+          setErrorDeleteModal(true);
+        },
+      },
+    );
   };
 
   const handleStartEdit = () => {
     handleMenuClose();
     setIsEditing(true);
-  };
-
-  const handleEditSubmit = (html: string, json: object) => {
-    onEdit?.(comment.id, html, json as JSONContent);
-    setIsEditing(false);
   };
 
   return (
@@ -96,7 +135,13 @@ export function CommentItem({
       <Avatar
         src={comment.author.avatar}
         alt={comment.author.name}
-        sx={{ width: 32, height: 32, mt: 0.5, flexShrink: 0, fontSize: "0.8rem" }}
+        sx={{
+          width: 32,
+          height: 32,
+          mt: 0.5,
+          flexShrink: 0,
+          fontSize: "0.8rem",
+        }}
       >
         {comment.author.name.charAt(0).toUpperCase()}
       </Avatar>
@@ -104,10 +149,10 @@ export function CommentItem({
       {/* Comment bubble */}
       <Box sx={{ flex: 1, minWidth: 0 }}>
         {/* Header row */}
-        <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.75, mb: 0.5 }}>
-          <Typography variant="subtitle2">
-            {comment.author.name}
-          </Typography>
+        <Box
+          sx={{ display: "flex", alignItems: "baseline", gap: 0.75, mb: 0.5 }}
+        >
+          <Typography variant="subtitle2">{comment.author.name}</Typography>
           <Typography
             variant="caption"
             color="text.disabled"
@@ -116,7 +161,11 @@ export function CommentItem({
             {timeAgo}
           </Typography>
           {isEdited && (
-            <Typography variant="caption" color="text.disabled" sx={{ fontStyle: "italic" }}>
+            <Typography
+              variant="caption"
+              color="text.disabled"
+              sx={{ fontStyle: "italic" }}
+            >
               (editado)
             </Typography>
           )}
@@ -125,7 +174,11 @@ export function CommentItem({
           {isOwner && (
             <Box sx={{ ml: "auto" }}>
               <Tooltip title="Más opciones">
-                <IconButton size="small" onClick={handleMenuOpen} sx={{ p: 0.25 }}>
+                <IconButton
+                  size="small"
+                  onClick={handleMenuOpen}
+                  sx={{ p: 0.25 }}
+                >
                   <MoreVertIcon sx={{ fontSize: 16 }} />
                 </IconButton>
               </Tooltip>
@@ -141,7 +194,11 @@ export function CommentItem({
                   <EditOutlinedIcon sx={{ fontSize: 16, mr: 1 }} /> Editar
                 </MenuItem>
                 <Divider />
-                <MenuItem dense onClick={handleDelete} sx={{ color: "error.main" }}>
+                <MenuItem
+                  dense
+                  onClick={handleDelete}
+                  sx={{ color: "error.main" }}
+                >
                   <DeleteOutlinedIcon sx={{ fontSize: 16, mr: 1 }} /> Eliminar
                 </MenuItem>
               </Menu>
@@ -152,11 +209,14 @@ export function CommentItem({
         {/* Body: preview or inline editor */}
         {isEditing ? (
           <CommentEditor
+            name="content"
+            control={control}
             initialContent={
               typeof comment.content === "string" ? comment.content : ""
             }
+            maxLength={500}
             users={allUsers}
-            onSubmit={handleEditSubmit}
+            onSubmit={handleSubmit(onSubmit)}
             onCancel={() => setIsEditing(false)}
             autoFocus
           />
@@ -174,49 +234,27 @@ export function CommentItem({
             <CommentPreview content={comment.content} />
           </Box>
         )}
-
-        {/* Action row: reactions + reply */}
-        {!isEditing && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.75 }}>
-            {/* Like / thumbs up */}
-            <Tooltip title="Me gusta">
-              <IconButton
-                size="small"
-                sx={{ p: 0.5 }}
-                onClick={() => onReact?.(comment.id, "👍")}
-              >
-                {comment.reactions?.find((r) => r.emoji === "👍")?.reacted ? (
-                  <ThumbUpIcon sx={{ fontSize: 14, color: "primary.main" }} />
-                ) : (
-                  <ThumbUpOutlinedIcon sx={{ fontSize: 14 }} />
-                )}
-              </IconButton>
-            </Tooltip>
-            {comment.reactions?.map((r) => (
-              <Chip
-                key={r.emoji}
-                label={`${r.emoji} ${r.count}`}
-                size="small"
-                variant={r.reacted ? "filled" : "outlined"}
-                onClick={() => onReact?.(comment.id, r.emoji)}
-                sx={{ height: 22, fontSize: "0.72rem", cursor: "pointer" }}
-              />
-            ))}
-
-            {onReply && (
-              <Tooltip title="Responder">
-                <IconButton
-                  size="small"
-                  sx={{ p: 0.5, ml: "auto" }}
-                  onClick={() => onReply(comment.id)}
-                >
-                  <ReplyIcon sx={{ fontSize: 14 }} />
-                </IconButton>
-              </Tooltip>
-            )}
-          </Box>
-        )}
       </Box>
+
+      {successDeleteModal && (
+        <Modal
+          title="Eliminación exitosa"
+          open={successDeleteModal}
+          onClose={() => setSuccessDeleteModal(false)}
+        >
+          <Typography>La eliminación del comentario fue exitosa</Typography>
+        </Modal>
+      )}
+
+      {errorDeleteModal && (
+        <Modal
+          title="Ocurrio un error"
+          open={errorDeleteModal}
+          onClose={() => setErrorDeleteModal(false)}
+        >
+          <Typography>Ocurrio un error en la eliminación del comentario</Typography>
+        </Modal>
+      )}
     </Box>
   );
 }

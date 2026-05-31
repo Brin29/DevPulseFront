@@ -5,6 +5,7 @@ import Link from "@tiptap/extension-link";
 import Mention from "@tiptap/extension-mention";
 import { Box } from "@mui/material";
 import type { JSONContent } from "@tiptap/react";
+import { useEffect } from "react";
 
 interface CommentPreviewProps {
   /**
@@ -36,6 +37,12 @@ export function CommentPreview({ content }: CommentPreviewProps) {
     content: html,
     editable: false,
   });
+
+  useEffect(() => {
+    if (editor && html !== editor.getHTML()) {
+      editor.commands.setContent(html);
+    }
+  }, [editor, html]);
 
   return (
     <Box
