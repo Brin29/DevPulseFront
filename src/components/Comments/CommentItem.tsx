@@ -22,7 +22,6 @@ import type {
 } from "../../models/task.model";
 import { useForm } from "react-hook-form";
 import { useCommentMutations } from "../../hooks/task.hook";
-import { Modal } from "../Modals/Modal";
 
 interface User {
   id: string;
@@ -65,8 +64,6 @@ export function CommentItem({
   const { edit, delete: deleteComment } = useCommentMutations();
   const [isEditing, setIsEditing] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const [successDeleteModal, setSuccessDeleteModal] = useState(false);
-  const [errorDeleteModal, setErrorDeleteModal] = useState(false);
   const isOwner = comment.author.id === currentUserId;
   const timeAgo = formatDistanceToNow(comment.createdAt, { addSuffix: true });
   const isEdited = !!comment.editedAt;
@@ -83,8 +80,12 @@ export function CommentItem({
   });
 
   const onSubmit = (data: UpdateTaskCommentRequest) => {
+    const payload = {
+      content: data.content || comment.content as string
+    }
+
     edit.mutate(
-      { teamId: teamId, taskId: taskId, commentId: commentId, payload: data },
+      { teamId: teamId, taskId: taskId, commentId: commentId, payload },
       {
         onSuccess: () => {
           handleMenuClose();
@@ -107,11 +108,8 @@ export function CommentItem({
     deleteComment.mutate(
       { teamId, taskId, commentId },
       {
-        onSuccess: () => {
-          setSuccessDeleteModal(true);
-        },
-        onError: () => {
-          setErrorDeleteModal(true);
+        onError: (error) => {
+          console.error("Ocurrio un error: " + error)
         },
       },
     );
@@ -127,11 +125,10 @@ export function CommentItem({
       sx={{
         display: "flex",
         gap: 1.5,
-        pl: depth > 0 ? 4 : 0, // indent nested comments
+        pl: depth > 0 ? 4 : 0,
         "&:not(:last-child)": { mb: 2 },
       }}
     >
-      {/* Avatar */}
       <Avatar
         src={comment.author.avatar}
         alt={comment.author.name}
@@ -146,9 +143,7 @@ export function CommentItem({
         {comment.author.name.charAt(0).toUpperCase()}
       </Avatar>
 
-      {/* Comment bubble */}
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        {/* Header row */}
         <Box
           sx={{ display: "flex", alignItems: "baseline", gap: 0.75, mb: 0.5 }}
         >
@@ -188,7 +183,6 @@ export function CommentItem({
                 onClose={handleMenuClose}
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                // PaperProps={{ sx: { minWidth: 140 } }}
               >
                 <MenuItem dense onClick={handleStartEdit}>
                   <EditOutlinedIcon sx={{ fontSize: 16, mr: 1 }} /> Editar
@@ -235,26 +229,6 @@ export function CommentItem({
           </Box>
         )}
       </Box>
-
-      {successDeleteModal && (
-        <Modal
-          title="Eliminación exitosa"
-          open={successDeleteModal}
-          onClose={() => setSuccessDeleteModal(false)}
-        >
-          <Typography>La eliminación del comentario fue exitosa</Typography>
-        </Modal>
-      )}
-
-      {errorDeleteModal && (
-        <Modal
-          title="Ocurrio un error"
-          open={errorDeleteModal}
-          onClose={() => setErrorDeleteModal(false)}
-        >
-          <Typography>Ocurrio un error en la eliminación del comentario</Typography>
-        </Modal>
-      )}
     </Box>
   );
 }

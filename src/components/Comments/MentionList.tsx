@@ -4,17 +4,14 @@ import {
   useLayoutEffect,
   useImperativeHandle,
   useState,
-  useRef,
 } from "react";
 import {
-  Box,
   Paper,
   List,
   ListItemButton,
   ListItemAvatar,
   ListItemText,
   Avatar,
-  Popper,
 } from "@mui/material";
 import type { SuggestionProps, SuggestionKeyDownProps } from "@tiptap/suggestion";
 
@@ -37,20 +34,15 @@ type MentionListProps = SuggestionProps<User>;
 export const MentionList = forwardRef<MentionListRef, MentionListProps>(
   ({ items, command, clientRect }, ref) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const anchorRef = useRef<HTMLDivElement>(null);
+    const [position, setPosition] = useState({ top: 0, left: 0 });
 
-    // Reset selection whenever the filtered list changes
     useEffect(() => setSelectedIndex(0), [items]);
 
-    // Keep the anchor at the @ character (position: fixed = viewport-relative, so no scroll offsets)
     useLayoutEffect(() => {
-      if (!anchorRef.current || !clientRect) return;
+      if (!clientRect) return;
       const rect = clientRect();
       if (!rect) return;
-      anchorRef.current.style.top = `${rect.top}px`;
-      anchorRef.current.style.left = `${rect.left}px`;
-      anchorRef.current.style.width = `${rect.width}px`;
-      anchorRef.current.style.height = `${rect.height}px`;
+      setPosition({ top: rect.top + rect.height + 4, left: rect.left });
     }, [clientRect, items]);
 
     const selectItem = (index: number) => {
@@ -58,7 +50,6 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
       if (item) command({ id: item.id, label: item.name });
     };
 
-    // Expose keyboard handler so TipTap can delegate arrow / enter keys
     useImperativeHandle(ref, () => ({
       onKeyDown: ({ event }: SuggestionKeyDownProps) => {
         if (event.key === "ArrowUp") {
@@ -80,66 +71,51 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
     if (!items.length) return null;
 
     return (
-      <>
-        {/* Virtual anchor at the @ cursor (fixed = viewport-relative coords) */}
-        <Box
-          ref={anchorRef}
-          sx={{ position: "fixed", pointerEvents: "none" }}
-        />
-
-        <Popper
-          open
-          anchorEl={anchorRef.current}
-          placement="bottom-start"
-          modifiers={[{ name: "offset", options: { offset: [0, 4] } }]}
-          sx={{ zIndex: 1400 }}
-        >
-          <Paper
-            elevation={4}
-            sx={{
-              borderRadius: 2,
-              overflow: "hidden",
-              minWidth: 220,
-              maxWidth: 320,
-              maxHeight: 280,
-              overflowY: "auto",
-            }}
-          >
-            <List dense disablePadding>
-              {items.map((user: any, index: any) => (
-                <ListItemButton
-                  key={user.id}
-                  selected={index === selectedIndex}
-                  onMouseEnter={() => setSelectedIndex(index)}
-                  onClick={() => selectItem(index)}
-                  sx={{
-                    py: 0.75,
-                    px: 1.5,
-                    "&.Mui-selected": {
-                      bgcolor: "primary.50",
-                      "&:hover": { bgcolor: "primary.100" },
-                    },
-                  }}
+      <Paper
+        elevation={4}
+        sx={{
+          position: "fixed",
+          top: position.top,
+          left: position.left,
+          zIndex: 1400,
+          borderRadius: 2,
+          overflow: "hidden",
+          minWidth: 220,
+          maxWidth: 320,
+          maxHeight: 280,
+          overflowY: "auto",
+        }}
+      >
+        <List dense disablePadding>
+          {items.map((user: any, index: any) => (
+            <ListItemButton
+              key={user.id}
+              selected={index === selectedIndex}
+              onMouseEnter={() => setSelectedIndex(index)}
+              onClick={() => selectItem(index)}
+              sx={{
+                py: 0.75,
+                px: 1.5,
+                "&.Mui-selected": {
+                  bgcolor: "primary.50",
+                  "&:hover": { bgcolor: "primary.100" },
+                },
+              }}
+            >
+              <ListItemAvatar sx={{ minWidth: 36 }}>
+                <Avatar
+                  src={user.avatar}
+                  alt={user.name}
+                  sx={{ width: 26, height: 26, fontSize: "0.7rem" }}
                 >
-                  <ListItemAvatar sx={{ minWidth: 36 }}>
-                    <Avatar
-                      src={user.avatar}
-                      alt={user.name}
-                      sx={{ width: 26, height: 26, fontSize: "0.7rem" }}
-                    >
-                      {user.name.charAt(0).toUpperCase()}
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={user.name}
-                    // primaryTypographyProps={{ fontSize: "0.85rem", fontWeight: 500 }}
-                  />
-                </ListItemButton>
-              ))}
-            </List>
-          </Paper>
-        </Popper>
-      </>
+                  {user.name.charAt(0).toUpperCase()}
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={user.name} />
+            </ListItemButton>
+          ))}
+        </List>
+      </Paper>
     );
   }
 );

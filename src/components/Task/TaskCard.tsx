@@ -1,5 +1,6 @@
 import { Box, Chip, Divider, Typography } from "@mui/material";
 import type { Task, TaskType, TaskPriority } from "../../models/task.model";
+import { toLocaleDate } from "../../utilities/toLocaleDate";
 
 const typeColors: Record<TaskType, string> = {
   BUG: "#e53935",
@@ -96,6 +97,15 @@ export const TaskCard = ({
       >
         {task.assigneeId.firstName + " " + task.assigneeId.lastName}
       </Typography>
+
+      <Box sx={{ display: "flex", gap: .5 }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 600, fontSize: "0.8125rem", }}>
+          Vence:
+        </Typography>
+        <Typography sx={{ fontSize: "0.8125rem", }} variant="subtitle2">
+          {toLocaleDate(task.dueDate)}
+        </Typography>
+      </Box>
 
       <Box
         sx={{

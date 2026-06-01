@@ -11,7 +11,12 @@ import { CommentToolbar } from "./CommentToolbar";
 import { MentionList } from "./MentionList";
 import type { MentionListRef } from "./MentionList";
 import { createRoot } from "react-dom/client";
-import { Controller, type Control, type FieldValues, type Path } from "react-hook-form";
+import {
+  Controller,
+  type Control,
+  type FieldValues,
+  type Path,
+} from "react-hook-form";
 
 interface User {
   id: string;
@@ -19,7 +24,7 @@ interface User {
   avatar?: string;
 }
 
-interface CommentEditorProps<T extends FieldValues>  {
+interface CommentEditorProps<T extends FieldValues> {
   value?: string;
   name: Path<T>;
   control: Control<T>;
@@ -41,6 +46,7 @@ export const CommentEditor = <T extends FieldValues>({
   onChange,
   onSubmit,
   onBlur,
+  onCancel,
   placeholder = "Escribe un comentario… usa @ para mencionar a alguien",
   maxLength = 500,
   users = [],
@@ -115,98 +121,110 @@ export const CommentEditor = <T extends FieldValues>({
   });
 
   useEffect(() => {
-    if (editor && value !== undefined && value !== editor.getHTML()) {
-      editor.commands.setContent(value);
+    if (editor) {
+      const content = value ?? initialContent;
+      if (content !== editor.getHTML()) {
+        editor.commands.setContent(content);
+      }
     }
-  }, [editor, value]);
+  }, [editor, value, initialContent]);
 
   const characterCount = editor?.storage.characterCount.characters() ?? 0;
+
+  const handelCancel = () => {
+    editor?.commands.clearContent();
+    onCancel?.();
+  }
 
   return (
     <Box component="form" onSubmit={onSubmit} sx={{ width: "100%" }}>
       <Controller
         name={name}
         control={control}
-          render={({ field }) => {
-            fieldOnChangeRef.current = field.onChange as (value: string) => void;
-            return (
-              <Paper
-                variant="outlined"
+        render={({ field }) => {
+          fieldOnChangeRef.current = field.onChange as (value: string) => void;
+          return (
+            <Paper
+              variant="outlined"
+              sx={{
+                borderRadius: 2,
+                overflow: "hidden",
+                "&:focus-within": {
+                  borderColor: "primary.main",
+                  boxShadow: (t) => `0 0 0 2px ${t.palette.primary.main}22`,
+                },
+                transition: "border-color 0.2s, box-shadow 0.2s",
+              }}
+            >
+              {/* Formatting toolbar */}
+              <CommentToolbar editor={editor} />
+
+              <Box
                 sx={{
-                  borderRadius: 2,
-                  overflow: "hidden",
-                  "&:focus-within": {
-                    borderColor: "primary.main",
-                    boxShadow: (t) => `0 0 0 2px ${t.palette.primary.main}22`,
+                  px: 1.5,
+                  py: 1,
+                  minHeight: 80,
+                  "& .tiptap": {
+                    outline: "none",
+                    fontSize: "0.9rem",
+                    lineHeight: 1.6,
+                    "& p.is-editor-empty:first-of-type::before": {
+                      content: "attr(data-placeholder)",
+                      color: "text.disabled",
+                      pointerEvents: "none",
+                      float: "left",
+                      height: 0,
+                    },
                   },
-                  transition: "border-color 0.2s, box-shadow 0.2s",
+                  "& .mention": {
+                    bgcolor: "primary.50",
+                    color: "primary.main",
+                    borderRadius: 1,
+                    px: 0.5,
+                    fontWeight: 600,
+                    fontSize: "inherit",
+                  },
                 }}
               >
-                {/* Formatting toolbar */}
-                <CommentToolbar editor={editor} />
+                <EditorContent {...field} editor={editor} />
+              </Box>
 
-                {/* The actual editable area */}
+              {/* Footer: character count + actions */}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  px: 1.5,
+                  py: 0.75,
+                  borderTop: "1px solid",
+                  borderColor: "divider",
+                }}
+              >
                 <Box
                   sx={{
-                    px: 1.5,
-                    py: 1,
-                    minHeight: 80,
-                    "& .tiptap": {
-                      outline: "none",
-                      fontSize: "0.9rem",
-                      lineHeight: 1.6,
-                      "& p.is-editor-empty:first-of-type::before": {
-                        content: "attr(data-placeholder)",
-                        color: "text.disabled",
-                        pointerEvents: "none",
-                        float: "left",
-                        height: 0,
-                      },
-                    },
-                    "& .mention": {
-                      bgcolor: "primary.50",
-                      color: "primary.main",
-                      borderRadius: 1,
-                      px: 0.5,
-                      fontWeight: 600,
-                      fontSize: "inherit",
-                    },
+                    fontSize: "0.75rem",
+                    color:
+                      characterCount >= maxLength
+                        ? "error.main"
+                        : "text.disabled",
                   }}
                 >
-                  <EditorContent {...field} editor={editor} />
+                  {characterCount}/{maxLength}
                 </Box>
-
-                {/* Footer: character count + actions */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    px: 1.5,
-                    py: 0.75,
-                    borderTop: "1px solid",
-                    borderColor: "divider",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      fontSize: "0.75rem",
-                      color:
-                        characterCount >= maxLength
-                          ? "error.main"
-                          : "text.disabled",
-                    }}
-                  >
-                    {characterCount}/{maxLength}
-                  </Box>
-                </Box>
-              </Paper>
-            );
-          }}
-        />
-        <Button>Cancelar</Button>
-        <Button type="submit">Enviar</Button>
+              </Box>
+            </Paper>
+          );
+        }}
+      />
+      <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
+        <Button onClick={handelCancel} variant="outlined" sx={{ mb: 1.5 }}>
+          Cancelar
+        </Button>
+        <Button disabled={value?.length !== undefined && value?.length <= 0} variant="contained" sx={{ mb: 1.5 }} type="submit">
+          Enviar
+        </Button>
       </Box>
-    );
-  };
-
+    </Box>
+  );
+};

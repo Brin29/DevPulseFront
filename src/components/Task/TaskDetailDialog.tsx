@@ -150,7 +150,24 @@ export const TaskDetailDialog = ({
                 {/* Columna izquierda: Descripción y Comentarios */}
                 <Grid size={{ xs: 12, md: 8 }}>
                   <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 3 }}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      // gap: 3,
+                      maxHeight: "75vh",
+                      overflowY: "auto",
+                      pr: 1,
+                      // "&::-webkit-scrollbar": {
+                      //   width: 8,
+                      // },
+                      // "&::-webkit-scrollbar-thumb": {
+                      //   backgroundColor: "grey.400",
+                      //   borderRadius: 4,
+                      // },
+                      // "&::-webkit-scrollbar-track": {
+                      //   backgroundColor: "transparent",
+                      // },
+                    }}
                   >
                     <Box>
                       <Typography
@@ -163,8 +180,8 @@ export const TaskDetailDialog = ({
                         {dataTask.task.description || "Sin descripción"}
                       </Typography>
                     </Box>
-                    <Divider />
-                    <Box>
+                    <Divider sx={{ mt: 2 }} />
+                    <Box sx={{ mt: 2 }}>
                       <Typography
                         variant="subtitle1"
                         sx={{ fontWeight: 600, mb: 2 }}

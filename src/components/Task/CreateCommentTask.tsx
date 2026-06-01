@@ -7,7 +7,13 @@ import {
   useTaskFormParams,
 } from "../../hooks/task.hook";
 import { CommentEditor } from "../Comments/CommentEditor";
-import { Alert, Box, CircularProgress, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Divider,
+  Typography,
+} from "@mui/material";
 import { CommentItem } from "../Comments/CommentItem";
 
 interface CreateCommentTaskProps {
@@ -50,12 +56,10 @@ export const CreateCommentTask = ({
     return raw.map((c: any) => ({
       id: c._id,
       author: {
-        id: c.author?._id || c.userId?._id || "",
-        name: c.author
-          ? `${c.author.firstName} ${c.author.lastName}`
-          : c.userId
-            ? `${c.userId.firstName} ${c.userId.lastName}`
-            : "Unknown",
+        id: c.author?._id || "",
+        name: c.authorId
+          ? `${c.authorId.firstName} ${c.authorId.lastName}`
+          : "Unknown",
         avatar: c.author?.avatar || c.userId?.avatar,
       },
       content: c.content,
@@ -127,22 +131,28 @@ export const CreateCommentTask = ({
         </Alert>
       )}
 
-      {comments.map((comment: any) => (
-        <CommentItem
-          commentId={comment.id}
-          teamId={teamId}
-          taskId={taskId}
-          key={comment.id}
-          comment={comment}
-          currentUserId={currentUserId}
-          allUsers={mentionUsers}
-          onEdit={handleEditComment}
-          onDelete={handleDeleteComment}
-        />
-      ))}
+      {comments.length > 0 ? (
+        comments.map((comment: any) => (
+          <CommentItem
+            commentId={comment.id}
+            teamId={teamId}
+            taskId={taskId}
+            key={comment.id}
+            comment={comment}
+            currentUserId={currentUserId}
+            allUsers={mentionUsers}
+            onEdit={handleEditComment}
+            onDelete={handleDeleteComment}
+          />
+        ))
+      ) : (
+        <Typography>No hay comentarios</Typography>
+      )}
+
+      <Divider sx={{ my: 2 }} />
 
       <Box>
-        <Typography variant="subtitle1" sx={{ mb: 2 }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
           Crear comentario
         </Typography>
 

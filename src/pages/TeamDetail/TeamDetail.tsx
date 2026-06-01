@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -25,7 +25,11 @@ export const TeamDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data, isLoading, isError, error: queryError } = useTeam(id!);
+  const [isUserAdmin, setIsUserAdmin] = useState(false);
   const { setSelectedTeam } = useTeamContext();
+
+  const myAuthUserSTR = JSON.parse(localStorage.getItem("authMe")!!);
+  const myUserId = myAuthUserSTR.user.id;
 
   useEffect(() => {
     if (data?.team) {
@@ -33,6 +37,19 @@ export const TeamDetail = () => {
     }
     return () => setSelectedTeam(null);
   }, [data, setSelectedTeam]);
+
+  useEffect(() => {
+    data?.team?.members.map((el: any) => {
+      if (el.role === "ADMIN") {
+        const userId = el.userId._id;
+        if (userId === myUserId) {
+          setIsUserAdmin(true);
+        }
+      } else {
+        return;
+      }
+    });
+  }, [data])
 
   return (
     <Box>
@@ -113,8 +130,7 @@ export const TeamDetail = () => {
           {data.team.members && data.team.members.length > 0 ? (
             <Stack spacing={1.5}>
               {data.team.members.map((member: any) => {
-
-                const { userId: user  } = member;
+                const { userId: user } = member;
                 return (
                   <Card
                     key={user._id}
@@ -163,7 +179,7 @@ export const TeamDetail = () => {
             </Typography>
           )}
 
-          <InvitationsList teamId={id!} />
+          {isUserAdmin && <InvitationsList teamId={id!} />}
         </>
       )}
     </Box>

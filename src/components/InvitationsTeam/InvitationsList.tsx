@@ -54,9 +54,7 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
 
   const totalCount = data?.total;
 
-
   const openDeleteModal = (id: string) => {
-    console.log(id);
     setDeleteTarget(id);
     setOpen(true);
   };
