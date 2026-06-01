@@ -187,7 +187,7 @@ export const EditTask: React.FC<EditTaskProps> = ({ taskData }) => {
 
       {successModal && (
         <Modal
-          title="Creación Exitosa"
+          title="Edición Exitosa"
           open={successModal}
           onClose={() => setSuccessModal(false)}
         >

@@ -24,29 +24,29 @@ export const Modal: React.FC<ModalProps> = ({
   onClose,
   sendInfo = false,
   onClick,
-  nameBtn = "Enviar", 
+  nameBtn = "Enviar",
   title,
   children,
-  maxWidth = "sm"
+  maxWidth = "sm",
 }) => {
   return (
-    <Dialog maxWidth={maxWidth} open={open} onClose={onClose}  fullWidth>
+    <Dialog maxWidth={maxWidth} open={open} onClose={onClose} fullWidth>
       <DialogTitle sx={{ fontWeight: 600 }}>{title}</DialogTitle>
       <Box>
         <DialogContent>{children}</DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           {sendInfo ? (
             <>
-              <Button onClick={onClose} color="inherit">
+              <Button variant="contained" onClick={onClose}>
                 Cancelar
               </Button>
 
-              <Button onClick={onClick} color="inherit">
+              <Button variant="outlined" onClick={onClick}>
                 {nameBtn}
               </Button>
             </>
           ) : (
-            <Button onClick={onClose} color="inherit">
+            <Button variant="contained" onClick={onClose}>
               Aceptar
             </Button>
           )}

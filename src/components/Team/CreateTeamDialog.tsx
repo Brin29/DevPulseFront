@@ -49,6 +49,7 @@ export const CreateTeamDialog = () => {
       </Button>
 
       <FormModal
+        title="Crear equipo"
         submitBtn="Crear"
         onSubmit={handleSubmit(onSubmit)}
         open={open}
@@ -74,7 +75,7 @@ export const CreateTeamDialog = () => {
           <Input
             control={control}
             type={InputType.TEXT}
-            label="Slug"
+            label="Enlace"
             name="slug"
             disabled={false}
           />

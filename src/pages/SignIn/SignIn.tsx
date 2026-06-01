@@ -1,4 +1,5 @@
-import { Button, Box, Typography, Link } from "@mui/material";
+import { Button, Box, Typography, Link, Avatar } from "@mui/material";
+import { LockOutlined } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import type { SignInRequest } from "../../models/auth.model";
 import { Input, InputType } from "../../components/Input";
@@ -39,19 +40,15 @@ export const SignIn = () => {
 
   return (
     <Box className="form-container">
-      <Typography component="h2">Sign in</Typography>
-      <Typography>
-        Don't have an account?{" "}
-        <Link
-          onClick={() => {
-            navigate("/request-code");
-          }}
-        >
-          Sign Up
-        </Link>
+      <Avatar className="form-avatar">
+        <LockOutlined />
+      </Avatar>
+      <Typography component="h2">Iniciar sesión</Typography>
+      <Typography className="form-subtitle">
+        Ingresa tus credenciales para acceder a tu cuenta
       </Typography>
       <Box
-        className="form-container"
+        className="form-body"
         noValidate
         component="form"
         onSubmit={handleSubmit(onSubmit)}
@@ -59,14 +56,14 @@ export const SignIn = () => {
         <Input
           control={control}
           type={InputType.TEXT}
-          label="Email"
+          label="Correo electrónico"
           name="email"
           disabled={false}
           rules={{
-            required: "Email is required",
+            required: "El correo es obligatorio",
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: "Invalid email",
+              message: "Correo inválido",
             },
           }}
         />
@@ -74,29 +71,41 @@ export const SignIn = () => {
         <Input
           control={control}
           type={InputType.PASSWORD}
-          label="Password"
+          label="Contraseña"
           name="password"
           disabled={false}
           rules={{
-            required: "Password is required",
+            required: "La contraseña es obligatoria",
             minLength: {
               value: 6,
-              message: "Minimum 6 characters",
+              message: "Mínimo 6 caracteres",
             },
           }}
         />
-        <Typography>
+        {/* <Box className="form-links">
           <Link
             onClick={() => {
               navigate("/sign-up");
             }}
           >
-            Forgot password?
+            ¿Olvidaste tu contraseña?
           </Link>
-        </Typography>
-        <Button className="w-full" type="submit">
-          Sign in
+        </Box> */}
+        <Button className="w-full" type="submit" size="large">
+          Iniciar sesión
         </Button>
+        <Box className="form-footer">
+          <Typography>
+            ¿No tienes cuenta?{" "}
+            <Link
+              onClick={() => {
+                navigate("/request-code");
+              }}
+            >
+              Registrarse
+            </Link>
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

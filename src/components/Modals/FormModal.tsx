@@ -31,7 +31,7 @@ export const FormModal: React.FC<FormModalProps> = ({
       <Box component="form" onSubmit={onSubmit}>
         <DialogContent>{children}</DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={onClose} color="inherit">
+          <Button variant="outlined" onClick={onClose}>
             Cancelar
           </Button>
           <Button type="submit" variant="contained">

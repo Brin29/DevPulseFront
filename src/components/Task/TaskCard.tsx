@@ -21,6 +21,13 @@ const priorityColors: Record<TaskPriority, string> = {
   CRITICAL: "#e53935",
 };
 
+const priorityLabels: Record<TaskPriority, string> = {
+  LOW: "Baja",
+  MEDIUM: "Media",
+  HIGH: "Alta",
+  CRITICAL: "Crítica",
+};
+
 interface TaskCardProps {
   task: Task;
   isDragging: boolean;
@@ -128,7 +135,7 @@ export const TaskCard = ({
           }}
         />
         <Chip
-          label={task.priority}
+          label={priorityLabels[task.priority]}
           size="small"
           sx={{
             bgcolor: priorityColors[task.priority],

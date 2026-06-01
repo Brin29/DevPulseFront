@@ -167,10 +167,7 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
               </CardContent>
             </Card>
           ))}
-        </Stack>
-      )}
 
-      {data && (
         <Box
           sx={{
             display: "flex",
@@ -181,18 +178,18 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
             flexWrap: "wrap",
             gap: 1,
           }}
-        >
+          >
           <Pagination
-            color="primary"
+          color="primary"
             count={Math.ceil(totalCount / pageSize)}
             page={page}
             onChange={(_, v) => onPageChange(v)}
           />
           <TablePagination
-            component="div"
-            count={totalCount}
-            page={page - 1}
-            onPageChange={() => {}}
+          component="div"
+          count={totalCount}
+          page={page - 1}
+          onPageChange={() => {}}
             rowsPerPage={pageSize}
             onRowsPerPageChange={(e) => onPageSizeChange(parseInt(e.target.value, 10))}
             rowsPerPageOptions={[5, 10, 15]}
@@ -202,7 +199,9 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
             sx={{ border: "none" }}
           />
         </Box>
+            </Stack>
       )}
+          
 
       <Modal
         open={open}

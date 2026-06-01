@@ -99,7 +99,7 @@ export const EditTeamDialog: React.FC<EditTeamDialogProps> = ({ team }) => {
           <Input
             control={control}
             type={InputType.TEXT}
-            label="Slug"
+            label="Enlace"
             name="slug"
             disabled={false}
           />
@@ -108,7 +108,7 @@ export const EditTeamDialog: React.FC<EditTeamDialogProps> = ({ team }) => {
 
       {successModal && (
         <Modal
-          title="Creación Exitosa"
+          title="Edición Exitosa"
           open={successModal}
           onClose={() => setSuccessModal(false)}
         >

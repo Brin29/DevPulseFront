@@ -1,3 +1,5 @@
+import { Box, Typography, Avatar, CircularProgress } from "@mui/material";
+import { LinkOutlined } from "@mui/icons-material";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { authUserMutations } from "../../hooks/auth.hook";
 import { useEffect } from "react";
@@ -30,7 +32,16 @@ export const MagicLogin = () => {
     });
   }, [token]);
 
-  console.log(token);
-
-  return <div>MagicLink</div>;
+  return (
+    <Box className="form-container magic-login-container">
+      <Avatar className="form-avatar">
+        <LinkOutlined />
+      </Avatar>
+      <Typography component="h2">Iniciando sesión</Typography>
+      <CircularProgress sx={{ mt: 1, mb: 1, color: "primary.main" }} />
+      <Typography className="form-subtitle">
+        Verificando tu enlace mágico, por favor espera...
+      </Typography>
+    </Box>
+  );
 };

@@ -1,4 +1,5 @@
-import { Button, Box, Typography, Link } from "@mui/material";
+import { Button, Box, Typography, Link, Avatar } from "@mui/material";
+import { EmailOutlined } from "@mui/icons-material";
 import { checkEmail } from "../../services/auth.service";
 import { useForm } from "react-hook-form";
 import type { CheckEmailRequest } from "../../models/auth.model";
@@ -29,6 +30,9 @@ export const RequestCode = () => {
     if (checkEmailResponse.exists) {
       createMagicLink.mutate(payload, {
         onSuccess: () => {
+          const userEmail = payload.email;
+
+          localStorage.setItem("signup_email", userEmail);
           navigate("/detected-account");
         },
         onError: (error) => {
@@ -55,19 +59,15 @@ export const RequestCode = () => {
 
   return (
     <Box className="form-container">
-      <Typography component="h2">Sign up</Typography>
-      <Typography>
-        Already have an account?{" "}
-        <Link
-          onClick={() => {
-            navigate("/sign-in");
-          }}
-        >
-          Sign In
-        </Link>
+      <Avatar className="form-avatar">
+        <EmailOutlined />
+      </Avatar>
+      <Typography component="h2">Crear cuenta</Typography>
+      <Typography className="form-subtitle">
+        Ingresa tu correo electrónico para comenzar
       </Typography>
       <Box
-        className="form-container"
+        className="form-body"
         noValidate
         component="form"
         onSubmit={handleSubmit(onSubmit)}
@@ -75,21 +75,33 @@ export const RequestCode = () => {
         <Input
           control={control}
           type={InputType.TEXT}
-          label="Email"
+          label="Correo electrónico"
           name="email"
           disabled={false}
           rules={{
-            required: "Email is required",
+            required: "El correo es obligatorio",
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: "Invalid email",
+              message: "Correo inválido",
             },
           }}
         />
 
-        <Button className="w-full" type="submit">
-          Sign up
+        <Button className="w-full" type="submit" size="large">
+          Continuar
         </Button>
+        <Box className="form-footer">
+          <Typography>
+            ¿Ya tienes cuenta?{" "}
+            <Link
+              onClick={() => {
+                navigate("/sign-in");
+              }}
+            >
+              Iniciar sesión
+            </Link>
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

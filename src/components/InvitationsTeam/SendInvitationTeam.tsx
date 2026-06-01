@@ -6,6 +6,7 @@ import {
   MenuItem,
   Select,
   Stack,
+  Typography,
 } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import type { SendInvitationModel } from "../../models/invitationTeams.models";
@@ -15,10 +16,13 @@ import { useTeamInvitationMutations } from "../../hooks/invitationTeam.hook";
 import { FormModal } from "../Modals/FormModal";
 import { Input, InputType } from "../Input";
 import { useParams } from "react-router-dom";
+import { Modal } from "../Modals/Modal";
 
 export const SendInvitationTeam = () => {
   const { id } = useParams<{ id: string }>();
   const [open, setOpen] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
 
   const { sendInvitation } = useTeamInvitationMutations();
 
@@ -36,7 +40,11 @@ export const SendInvitationTeam = () => {
       {
         onSuccess: () => {
           setOpen(false);
+          setSuccessModal(true);
           reset();
+        },
+        onError: () => {
+          setErrorModal(true);
         },
       },
     );
@@ -94,6 +102,26 @@ export const SendInvitationTeam = () => {
           />
         </Stack>
       </FormModal>
+
+      {successModal && (
+        <Modal
+          title="Invitación enviada"
+          open={successModal}
+          onClose={() => setSuccessModal(false)}
+        >
+          <Typography>La evitación fue enviada de manera exitosa</Typography>
+        </Modal>
+      )}
+
+      {errorModal && (
+        <Modal
+          title="Ocurrio un error"
+          open={errorModal}
+          onClose={() => setErrorModal(false)}
+        >
+          <Typography>Ocurrio un error en el envio de la invitación</Typography>
+        </Modal>
+      )}
     </>
   );
 };

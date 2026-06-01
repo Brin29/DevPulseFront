@@ -1,16 +1,24 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Avatar } from "@mui/material";
+import { MailOutlined } from "@mui/icons-material";
 
 export const DetectedAccount = () => {
+  const email = localStorage.getItem("signup_email") ?? "";
+
   return (
-    <Box>
-      <Typography>
-        We've detected you already have an account registered with a service
-        different from LinkedIn.
+    <Box className="form-container detected-account-container">
+      <Avatar className="form-avatar">
+        <MailOutlined />
+      </Avatar>
+      <Typography component="h2">Cuenta existente</Typography>
+      <Typography className="form-subtitle">
+        Detectamos que ya tienes una cuenta registrada con este correo.
       </Typography>
-      <Typography>
-        For security reasons, we've sent a magic link to your email
-        breinerstivenparracortes50@gmail.com to sign you in.
-      </Typography>
+      <Box className="form-body">
+        <Typography>
+          Por motivos de seguridad, hemos enviado un enlace a{" "}
+          <strong>{email}</strong> para que inicies sesión de forma segura.
+        </Typography>
+      </Box>
     </Box>
   );
 };

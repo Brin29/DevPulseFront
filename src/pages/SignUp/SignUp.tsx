@@ -1,4 +1,5 @@
-import { Button, Box, Typography, Link } from "@mui/material";
+import { Button, Box, Typography, Link, Avatar } from "@mui/material";
+import { PersonAddOutlined } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import type { SignUpRequest } from "../../models/auth.model";
 import { Input, InputType } from "../../components/Input";
@@ -40,16 +41,19 @@ export const SignUp = () => {
         },
       },
     );
-
-    // const response = await signUp(payload, verificationToken);
-    // signInAdapter(response);
   };
 
   return (
     <Box className="form-container">
-      <Typography component="h2">Sign up</Typography>
+      <Avatar className="form-avatar">
+        <PersonAddOutlined />
+      </Avatar>
+      <Typography component="h2">Crear cuenta</Typography>
+      <Typography className="form-subtitle">
+        Completa tus datos para registrarte
+      </Typography>
       <Box
-        className="form-container"
+        className="form-body"
         noValidate
         component="form"
         onSubmit={handleSubmit(onSubmit)}
@@ -57,74 +61,62 @@ export const SignUp = () => {
         <Input
           control={control}
           type={InputType.TEXT}
-          label="Email"
+          label="Correo electrónico"
           name="email"
           disabled={true}
-          // rules={{
-          //   required: "Password is required",
-          //   minLength: {
-          //     value: 6,
-          //     message: "Minimum 6 characters",
-          //   },
-          // }}
         />
 
         <Input
           control={control}
           type={InputType.TEXT}
-          label="First Name"
+          label="Nombre"
           name="firstName"
           disabled={false}
-          // rules={{
-          //   required: "Password is required",
-          //   minLength: {
-          //     value: 6,
-          //     message: "Minimum 6 characters",
-          //   },
-          // }}
+          rules={{
+            required: "El nombre es obligatorio",
+          }}
         />
 
         <Input
           control={control}
           type={InputType.TEXT}
-          label="Last Name"
+          label="Apellido"
           name="lastName"
           disabled={false}
-          // rules={{
-          //   required: "Password is required",
-          //   minLength: {
-          //     value: 6,
-          //     message: "Minimum 6 characters",
-          //   },
-          // }}
+          rules={{
+            required: "El apellido es obligatorio",
+          }}
         />
 
         <Input
           control={control}
           type={InputType.PASSWORD}
-          label="Password"
+          label="Contraseña"
           name="password"
           disabled={false}
           rules={{
-            required: "Password is required",
+            required: "La contraseña es obligatoria",
             minLength: {
               value: 6,
-              message: "Minimum 6 characters",
+              message: "Mínimo 6 caracteres",
             },
           }}
         />
-        <Typography>
-          <Link
-            onClick={() => {
-              navigate("/sign-up");
-            }}
-          >
-            Forgot password?
-          </Link>
-        </Typography>
-        <Button className="w-full" type="submit">
-          Sign up
+        <Button className="w-full" type="submit" size="large">
+          Crear cuenta
         </Button>
+        <Box className="form-footer">
+          <Typography>
+            ¿Ya tienes cuenta?{" "}
+            <Link
+              onClick={() => {
+                navigate("/sign-in");
+              }}
+            >
+              Iniciar sesión
+            </Link>
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

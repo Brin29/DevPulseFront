@@ -1,4 +1,5 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography, Avatar } from "@mui/material";
+import { PinOutlined } from "@mui/icons-material";
 import { useForm, FormProvider } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import type { VerifyCodeRequest } from "../../models/auth.model";
@@ -34,18 +35,28 @@ export const VerificationCode = () => {
   };
 
   return (
-    <FormProvider {...methods}>
-      <Box
-        noValidate
-        component="form"
-        onSubmit={methods.handleSubmit(onSubmit)}
-        sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-      >
-        <CodeInput name="code" codeLength={6} />
-        <Button type="submit" variant="contained">
-          Verificar
-        </Button>
-      </Box>
-    </FormProvider>
+    <Box className="form-container">
+      <Avatar className="form-avatar">
+        <PinOutlined />
+      </Avatar>
+      <Typography component="h2">Verificar código</Typography>
+      <Typography className="form-subtitle">
+        Ingresa el código de 6 dígitos que enviamos a tu correo
+      </Typography>
+      <FormProvider {...methods}>
+        <Box
+          className="form-body"
+          noValidate
+          component="form"
+          onSubmit={methods.handleSubmit(onSubmit)}
+          sx={{ gap: 3 }}
+        >
+          <CodeInput name="code" codeLength={6} />
+          <Button className="w-full" type="submit" size="large">
+            Verificar
+          </Button>
+        </Box>
+      </FormProvider>
+    </Box>
   );
 };

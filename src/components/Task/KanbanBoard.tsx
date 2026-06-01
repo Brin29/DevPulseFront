@@ -14,10 +14,10 @@ import { useParams } from "react-router-dom";
 import { Modal } from "../Modals/Modal";
 
 const COLUMNS: { status: TaskStatus; label: string; color: string }[] = [
-  { status: "OPEN", label: "OPEN", color: "#5e6c84" },
-  { status: "IN_PROGRESS", label: "IN PROGRESS", color: "#0052cc" },
-  { status: "RESOLVED", label: "RESOLVED", color: "#36b37e" },
-  { status: "CLOSED", label: "CLOSED", color: "#42526e" },
+  { status: "OPEN", label: "ABIERTA", color: "#5e6c84" },
+  { status: "IN_PROGRESS", label: "EN PROGRESO", color: "#0052cc" },
+  { status: "RESOLVED", label: "RESUELTA", color: "#36b37e" },
+  { status: "CLOSED", label: "CERRADA", color: "#42526e" },
 ];
 
 export const KanbanBoard = () => {

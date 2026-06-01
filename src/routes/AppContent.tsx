@@ -13,6 +13,7 @@ import { Teams } from "../pages/Teams/Teams";
 import { TeamDetail } from "../pages/TeamDetail/TeamDetail";
 import { Tasks } from "../pages/Tasks/Tasks";
 import { AcceptInvitationPage } from "../pages/TeamInvitation/AcceptInvitationPage";
+import { PublicLayout } from "../components/Layout/PublicLayout";
 
 export const AppContent = () => {
   const navigate = useNavigate();
@@ -40,13 +41,19 @@ export const AppContent = () => {
           </div>
         }
       >
-        <Route index element={<Navigate to="/sign-in" />} />
-        <Route path="sign-in" element={<SignIn />} />
-        <Route path="sign-up" element={<SignUp />} />
-        <Route path="request-code" element={<RequestCode />} />
-        <Route path="verify-code" element={<VerificationCode />} />
-        <Route path="magic-login" element={<MagicLogin />} />
-        <Route path="detected-account" element={<DetectedAccount />} />
+        <Route index element={<Navigate to="/dashboard" />} />
+        <Route element={<PublicLayout />}>
+          <Route path="sign-in" element={<SignIn />} />
+          <Route path="sign-up" element={<SignUp />} />
+          <Route path="request-code" element={<RequestCode />} />
+          <Route path="verify-code" element={<VerificationCode />} />
+          <Route path="magic-login" element={<MagicLogin />} />
+          <Route path="detected-account" element={<DetectedAccount />} />
+          <Route
+            path="teams/invitations/:token/accept"
+            element={<AcceptInvitationPage />}
+          />
+        </Route>
       </Route>
 
       <Route element={<Layout />}>
@@ -87,11 +94,6 @@ export const AppContent = () => {
           }
         />
       </Route>
-
-      <Route
-        path="teams/invitations/:token/accept"
-        element={<AcceptInvitationPage />}
-      />
     </Routes>
   );
 };

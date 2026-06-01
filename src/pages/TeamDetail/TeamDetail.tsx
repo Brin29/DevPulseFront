@@ -49,7 +49,7 @@ export const TeamDetail = () => {
         return;
       }
     });
-  }, [data])
+  }, [data]);
 
   return (
     <Box>
@@ -124,7 +124,7 @@ export const TeamDetail = () => {
             <Typography variant="h6" sx={{ fontWeight: 600 }}>
               Miembros
             </Typography>
-            <SendInvitationTeam />
+            {isUserAdmin && <SendInvitationTeam />}
           </Box>
 
           {data.team.members && data.team.members.length > 0 ? (

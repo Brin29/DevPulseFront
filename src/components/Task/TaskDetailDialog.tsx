@@ -53,6 +53,13 @@ const priorityColors: Record<TaskPriority, string> = {
   CRITICAL: "#e53935",
 };
 
+const priorityLabels: Record<TaskPriority, string> = {
+  LOW: "Baja",
+  MEDIUM: "Media",
+  HIGH: "Alta",
+  CRITICAL: "Crítica",
+};
+
 const statusLabels: Record<string, string> = {
   OPEN: "Abierto",
   IN_PROGRESS: "En Progreso",
@@ -250,7 +257,7 @@ export const TaskDetailDialog = ({
                           Prioridad
                         </Typography>
                         <Chip
-                          label={dataTask.task.priority}
+                          label={priorityLabels[dataTask.task.priority as TaskPriority]}
                           size="small"
                           sx={{
                             bgcolor:
