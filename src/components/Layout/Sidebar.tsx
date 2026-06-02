@@ -278,6 +278,7 @@ export const Sidebar = ({
             color: "#4c0e7e",
           }}
         >
+          
           <img
             src="/public/icondevpulseheader.jpg"
             alt="DevPulse"
