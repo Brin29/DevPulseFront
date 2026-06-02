@@ -40,7 +40,7 @@ export const TeamDetail = () => {
 
   useEffect(() => {
     data?.team?.members.map((el: any) => {
-      if (el.role === "ADMIN") {
+      if (el.role.toLowerCase() === "admin") {
         const userId = el.userId._id;
         if (userId === myUserId) {
           setIsUserAdmin(true);
