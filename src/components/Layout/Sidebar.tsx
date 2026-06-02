@@ -279,7 +279,7 @@ export const Sidebar = ({
           }}
         >
           <img
-            src="../../public/icondevpulseheader.jpg"
+            src="/public/icondevpulseheader.jpg"
             alt="DevPulse"
             style={{ height: 28, width: 28, borderRadius: 4 }}
           />
@@ -295,7 +295,7 @@ export const Sidebar = ({
       <div className="sidebar__header">
         <span className="sidebar__logo">
           <img
-            src="../../public/icondevpulseheader.jpg"
+            src="/public/icondevpulseheader.jpg"
             alt="DevPulse"
             className="sidebar__logo-img"
           />

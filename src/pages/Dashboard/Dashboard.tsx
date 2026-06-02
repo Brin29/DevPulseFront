@@ -4,7 +4,7 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import BuildCircleIcon from "@mui/icons-material/BuildCircle";
 import { useNavigate } from "react-router-dom";
 
-const logoPath = "../../public/icondevpulseheader.jpg";
+const logoPath = "/public/icondevpulseheader.jpg";
 
 const features = [
   {
