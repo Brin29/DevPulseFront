@@ -295,11 +295,11 @@ export const Sidebar = ({
     <aside className={`sidebar ${collapsed ? "sidebar--collapsed" : ""}`}>
       <div className="sidebar__header">
         <span className="sidebar__logo">
-          <img
+          {/* <img
             src="/public/icondevpulseheader.jpg"
             alt="DevPulse"
             className="sidebar__logo-img"
-          />
+          /> */}
           {!collapsed && <span className="sidebar__logo-text">DevPulse</span>}
         </span>
       </div>
