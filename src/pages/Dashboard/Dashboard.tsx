@@ -4,7 +4,7 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import BuildCircleIcon from "@mui/icons-material/BuildCircle";
 import { useNavigate } from "react-router-dom";
 
-const logoPath = "/public/icondevpulseheader.jpg";
+// const logoPath = "/public/icondevpulseheader.jpg";
 
 const features = [
   {
@@ -38,12 +38,12 @@ export const Dashboard = () => {
     <Box>
       <Box sx={{ mb: 4 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}>
-          <Box
+          {/* <Box
             component="img"
             src={logoPath}
             alt="DevPulse"
             sx={{ width: 36, height: 36, borderRadius: 1 }}
-          />
+          /> */}
           <Typography variant="h4" sx={{ fontWeight: 700 }}>
             DevPulse
           </Typography>

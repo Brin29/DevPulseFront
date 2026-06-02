@@ -278,12 +278,12 @@ export const Sidebar = ({
             color: "#4c0e7e",
           }}
         >
-          
-          <img
+
+          {/* <img
             src="/public/icondevpulseheader.jpg"
             alt="DevPulse"
             style={{ height: 28, width: 28, borderRadius: 4 }}
-          />
+          /> */}
           DevPulse
         </div>
         {navContent}
