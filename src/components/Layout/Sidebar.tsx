@@ -269,6 +269,7 @@ export const Sidebar = ({
             alignItems: "center",
             justifyContent: "center",
             height: 64,
+            gap: 8,
             borderBottom: "1px solid",
             borderColor: "divider",
             fontFamily: '"Poppins", Helvetica, Arial, sans-serif',
@@ -277,6 +278,11 @@ export const Sidebar = ({
             color: "#4c0e7e",
           }}
         >
+          <img
+            src="../../public/icondevpulseheader.jpg"
+            alt="DevPulse"
+            style={{ height: 28, width: 28, borderRadius: 4 }}
+          />
           DevPulse
         </div>
         {navContent}
@@ -288,13 +294,12 @@ export const Sidebar = ({
     <aside className={`sidebar ${collapsed ? "sidebar--collapsed" : ""}`}>
       <div className="sidebar__header">
         <span className="sidebar__logo">
-          {selectedTeam
-            ? collapsed
-              ? selectedTeam.name.charAt(0).toUpperCase()
-              : selectedTeam.name
-            : collapsed
-              ? "D"
-              : "DevPulse"}
+          <img
+            src="../../public/icondevpulseheader.jpg"
+            alt="DevPulse"
+            className="sidebar__logo-img"
+          />
+          {!collapsed && <span className="sidebar__logo-text">DevPulse</span>}
         </span>
       </div>
       <nav className="sidebar__nav">{navContent}</nav>

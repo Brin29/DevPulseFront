@@ -28,13 +28,11 @@ export const Header = ({
   onMobileOpen,
 }: HeaderProps) => {
   const authUser = JSON.parse(localStorage.getItem("authMe")!!);
-  const userEmail = authUser.user.email;
+  const userEmail = authUser?.user.email;
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { selectedTeam } = useTeamContext();
-
-  console.log(selectedTeam)
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const menuOpen = Boolean(anchorEl);
@@ -81,7 +79,7 @@ export const Header = ({
 
       <div className="header__right">
         <Avatar className="header__avatar" onClick={handleAvatarClick}>
-          { userEmail[0].toUpperCase() }
+          { userEmail ? userEmail[0].toUpperCase() : "U" }
         </Avatar>
         <Menu
           anchorEl={anchorEl}

@@ -2,8 +2,9 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 import GroupsIcon from "@mui/icons-material/Groups";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import BuildCircleIcon from "@mui/icons-material/BuildCircle";
-import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { useNavigate } from "react-router-dom";
+
+const logoPath = "../../public/icondevpulseheader.jpg";
 
 const features = [
   {
@@ -37,7 +38,12 @@ export const Dashboard = () => {
     <Box>
       <Box sx={{ mb: 4 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}>
-          <RocketLaunchIcon sx={{ fontSize: 32, color: "primary.main" }} />
+          <Box
+            component="img"
+            src={logoPath}
+            alt="DevPulse"
+            sx={{ width: 36, height: 36, borderRadius: 1 }}
+          />
           <Typography variant="h4" sx={{ fontWeight: 700 }}>
             DevPulse
           </Typography>
