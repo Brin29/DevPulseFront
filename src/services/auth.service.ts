@@ -26,7 +26,7 @@ async function authCall<TRes, TReq = object>(
 
     return {
       ...response,
-      message: response ?? "Sin mensaje",
+      message: response.message ?? "Sin mensaje",
     } as ApiResponse<TRes>;
   } catch (error) {
     throw error;
