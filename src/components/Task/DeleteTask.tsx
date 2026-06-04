@@ -7,10 +7,11 @@ export interface DeleteTaskProps {
   open: boolean;
   setOpen: (value: boolean) => void;
   errorModal: boolean;
+  errorMessage: string;
   setErrorModal: (value: boolean) => void;
 }
 
-export const DeleteTask: React.FC<DeleteTaskProps> = ({ open, setOpen, onDelete, errorModal, setErrorModal }) => {
+export const DeleteTask: React.FC<DeleteTaskProps> = ({ open, setOpen, onDelete, errorModal,errorMessage, setErrorModal }) => {
 
   return (
     <>
@@ -38,7 +39,7 @@ export const DeleteTask: React.FC<DeleteTaskProps> = ({ open, setOpen, onDelete,
           open={errorModal}
           onClose={() => setErrorModal(false)}
         >
-          <Typography>Ocurrio un error en la eliminación</Typography>
+          <Typography>{errorMessage}</Typography>
         </Modal>
       )}
     </>

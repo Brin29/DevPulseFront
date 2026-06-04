@@ -5,10 +5,15 @@ import type { SignInRequest } from "../../models/auth.model";
 import { Input, InputType } from "../../components/Input";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { authUserMutations } from "../../hooks/auth.hook";
+import { useState } from "react";
+import { Modal } from "../../components/Modals/Modal";
+import type { ApiResponse, ApiResponseError } from "../../models/api.model";
 
 export const SignIn = () => {
   const { login } = authUserMutations();
   const [searchParams] = useSearchParams();
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
   const { handleSubmit, control } = useForm<SignInRequest>({
@@ -27,13 +32,14 @@ export const SignIn = () => {
     };
 
     login.mutate(payload, {
-      onSuccess: (response: any) => {
+      onSuccess: (response: ApiResponse) => {
         navigate(redirect || "/dashboard");
         localStorage.setItem("authMe", JSON.stringify(response));
         localStorage.removeItem("auth_redirect");
       },
-      onError: (error: any) => {
-        console.log(error);
+      onError: (error: ApiResponseError) => {
+        setErrorModal(true);
+        setErrorMessage(error?.response?.data?.error);
       },
     });
   };
@@ -107,6 +113,16 @@ export const SignIn = () => {
           </Typography>
         </Box>
       </Box>
+
+      {errorModal && (
+        <Modal
+          title="Ocurrio un error"
+          open={errorModal}
+          onClose={() => setErrorModal(false)}
+        >
+          <Typography>{errorMessage}</Typography>
+        </Modal>
+      )}
     </Box>
   );
 };

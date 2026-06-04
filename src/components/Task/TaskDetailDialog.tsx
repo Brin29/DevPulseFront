@@ -33,6 +33,7 @@ import { EditTask } from "./EditTask";
 // import { CommentEditor } from "../Comments/CommentEditor";
 // import { Controller } from "react-hook-form";
 import { CreateCommentTask } from "./CreateCommentTask";
+import type { ApiResponseError } from "../../models/api.model";
 
 const typeColors: Record<TaskType, string> = {
   BUG: "#e53935",
@@ -84,6 +85,7 @@ export const TaskDetailDialog = ({
   const { id: teamId } = useParams<{ id: string }>();
   const { delete: deleteTask } = useTaskMutations();
   const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const {
@@ -102,8 +104,9 @@ export const TaskDetailDialog = ({
           onClose();
           onTaskDelete?.();
         },
-        onError: () => {
+        onError: (error: ApiResponseError) => {
           setErrorModal(true);
+          setErrorMessage(error.response.data.error);
           setDeleteOpen(false);
         },
       },
@@ -142,6 +145,7 @@ export const TaskDetailDialog = ({
                   <DeleteTask
                     open={deleteOpen}
                     setOpen={setDeleteOpen}
+                    errorMessage={errorMessage}
                     setErrorModal={setErrorModal}
                     errorModal={errorModal}
                     onDelete={handleDelete}

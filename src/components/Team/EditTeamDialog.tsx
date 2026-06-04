@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import type { UpdateTeamRequest } from "../../models/team.model";
 import { useParams } from "react-router-dom";
 import { Modal } from "../Modals/Modal";
+import type { ApiResponseError } from "../../models/api.model";
 
 export interface EditTeamDialogProps {
   team: any;
@@ -18,6 +19,7 @@ export const EditTeamDialog: React.FC<EditTeamDialogProps> = ({ team }) => {
   const [open, setOpen] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const { edit } = useTeamMutations();
 
   const { name, description, slug } = team;
@@ -35,25 +37,24 @@ export const EditTeamDialog: React.FC<EditTeamDialogProps> = ({ team }) => {
   }, [team]);
 
   const onSubmit = (data: UpdateTeamRequest) => {
-    if (id) {
+
       edit.mutate(
-        { id, payload: data },
+        { id: id!!, payload: data },
         {
           onSuccess: () => {
             setOpen(false);
             setSuccessModal(true);
             reset();
           },
-          onError: () => {
+          onError: (error: ApiResponseError) => {
             setOpen(false);
             setErrorModal(true);
+            setErrorMessage(error?.response?.data?.error);
             reset();
           },
         },
       );
-    } else {
-      console.log("Ocurrio un error");
-    }
+    
   };
 
   const handleClose = () => {
@@ -122,7 +123,7 @@ export const EditTeamDialog: React.FC<EditTeamDialogProps> = ({ team }) => {
           open={errorModal}
           onClose={() => setErrorModal(false)}
         >
-          <Typography>Ocurrio un error en la edición</Typography>
+          <Typography>{errorMessage}</Typography>
         </Modal>
       )}
     </>

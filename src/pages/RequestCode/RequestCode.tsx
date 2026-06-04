@@ -7,9 +7,14 @@ import { Input, InputType } from "../../components/Input";
 import { useNavigate } from "react-router-dom";
 import { CheckEmailAdapter } from "../../adapters";
 import { authUserMutations } from "../../hooks/auth.hook";
+import type { ApiResponseError } from "../../models/api.model";
+import { useState } from "react";
+import { Modal } from "../../components/Modals/Modal";
 
 export const RequestCode = () => {
   const navigate = useNavigate();
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { createCode, createMagicLink } = authUserMutations();
 
@@ -31,12 +36,12 @@ export const RequestCode = () => {
       createMagicLink.mutate(payload, {
         onSuccess: () => {
           const userEmail = payload.email;
-
           localStorage.setItem("signup_email", userEmail);
           navigate("/detected-account");
         },
-        onError: (error) => {
-          console.log("Ocurrio un error:" + error);
+        onError: (error: ApiResponseError) => {
+          setErrorModal(true);
+          setErrorMessage(error?.response?.data?.error);
         },
       });
     } else {
@@ -50,8 +55,9 @@ export const RequestCode = () => {
 
           navigate("/verify-code");
         },
-        onError: (error) => {
-          console.log("Ocurrio un error:" + error);
+        onError: (error: ApiResponseError) => {
+          setErrorModal(true);
+          setErrorMessage(error?.response?.data?.error);
         },
       });
     }
@@ -103,6 +109,16 @@ export const RequestCode = () => {
           </Typography>
         </Box>
       </Box>
+
+      {errorModal && (
+        <Modal
+          title="Ocurrio un error"
+          open={errorModal}
+          onClose={() => setErrorModal(false)}
+        >
+          <Typography>{errorMessage}</Typography>
+        </Modal>
+      )}
     </Box>
   );
 };

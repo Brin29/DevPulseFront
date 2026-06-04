@@ -111,7 +111,6 @@ api.interceptors.response.use(
       if (isRefreshing) {
         try {
           const newToken = await subscribeTokenRefresh();
-          console.log(newToken)
           if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${newToken}`;
           } else {
@@ -147,8 +146,6 @@ api.interceptors.response.use(
           },
         );
 
-        console.log(storedUser?.access_token)
-
         const newAccess = refreshResp.data.access_token;
         const newRefresh = refreshResp.data.refresh_token;
 
@@ -159,7 +156,6 @@ api.interceptors.response.use(
           localStorage.setItem("authMe", JSON.stringify(updatedAuth));
         }
 
-        console.log(newAccess)
         onRefreshed(newAccess);
         isRefreshing = false;
 

@@ -25,10 +25,6 @@ export interface MentionListRef {
   onKeyDown: (props: SuggestionKeyDownProps) => boolean;
 }
 
-// TipTap passes the SuggestionProps, which include:
-//   items      – filtered list from the `items` function
-//   command    – call this with the chosen item to insert the mention
-//   clientRect – bounding rect of the @ trigger (for positioning)
 type MentionListProps = SuggestionProps<User>;
 
 export const MentionList = forwardRef<MentionListRef, MentionListProps>(
@@ -89,7 +85,7 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
         <List dense disablePadding>
           {items.map((user: any, index: any) => (
             <ListItemButton
-              key={user.id}
+              key={user._id}
               selected={index === selectedIndex}
               onMouseEnter={() => setSelectedIndex(index)}
               onClick={() => selectItem(index)}

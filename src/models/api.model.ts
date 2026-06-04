@@ -3,11 +3,19 @@ export interface ApiRequest<T = unknown> {
 }
 
 export interface ApiResponse<T = unknown> {
-  ok: boolean;
-  code: string;
-  message?: string;
-  trace_id?: string;
+  // ok: boolean;
+  // code: string;
+  // message?: string;
+  // trace_id?: string;
   data: T;
-  errors?: string[];
+  // errors?: string[];
 }
 
+
+export interface ApiResponseError{ 
+  response: {
+    data: {
+      error: string;
+    }
+  }
+}

@@ -21,6 +21,7 @@ import {
 import type { Invitation } from "../../models/invitationTeams.models";
 import { useState } from "react";
 import { Modal } from "../Modals/Modal";
+import type { ApiResponseError } from "../../models/api.model";
 
 interface InvitationsListProps {
   teamId: string;
@@ -30,6 +31,7 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
   const [open, setOpen] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
     
@@ -66,9 +68,10 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
           setOpen(false);
           setSuccessModal(true);
         },
-        onError: () => {
+        onError: (error: ApiResponseError) => {
           setOpen(false);
           setErrorModal(true);
+          setErrorMessage(error?.response?.data?.error);
         },
       });
     }
@@ -232,7 +235,7 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
           open={errorModal}
           onClose={() => setErrorModal(false)}
         >
-          <Typography>Ocurrio un error en la eliminación</Typography>
+          <Typography>{errorMessage}</Typography>
         </Modal>
       )}
     </Box>

@@ -17,11 +17,13 @@ import { FormModal } from "../Modals/FormModal";
 import { Input, InputType } from "../Input";
 import { useParams } from "react-router-dom";
 import { Modal } from "../Modals/Modal";
+import type { ApiResponseError } from "../../models/api.model";
 
 export const SendInvitationTeam = () => {
   const { id } = useParams<{ id: string }>();
   const [open, setOpen] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [errorModal, setErrorModal] = useState(false);
 
   const { sendInvitation } = useTeamInvitationMutations();
@@ -43,8 +45,9 @@ export const SendInvitationTeam = () => {
           setSuccessModal(true);
           reset();
         },
-        onError: () => {
+        onError: (error: ApiResponseError) => {
           setErrorModal(true);
+          setErrorMessage(error?.response?.data?.error);
         },
       },
     );
@@ -119,7 +122,7 @@ export const SendInvitationTeam = () => {
           open={errorModal}
           onClose={() => setErrorModal(false)}
         >
-          <Typography>Ocurrio un error en el envio de la invitación</Typography>
+          <Typography>{errorMessage}</Typography>
         </Modal>
       )}
     </>

@@ -5,9 +5,14 @@ import { useNavigate } from "react-router-dom";
 import type { VerifyCodeRequest } from "../../models/auth.model";
 import { authUserMutations } from "../../hooks/auth.hook";
 import { CodeInput } from "../../components/CodeInput";
+import { useState } from "react";
+import type { ApiResponseError } from "../../models/api.model";
+import { Modal } from "../../components/Modals/Modal";
 
 export const VerificationCode = () => {
   const navigate = useNavigate();
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const methods = useForm<VerifyCodeRequest>({
     defaultValues: { code: "" },
   });
@@ -17,7 +22,6 @@ export const VerificationCode = () => {
   const onSubmit = async (data: VerifyCodeRequest) => {
     const email = localStorage.getItem("signup_email") as string;
 
-
     const payload = {
       ...data,
       email,
@@ -25,11 +29,12 @@ export const VerificationCode = () => {
 
     verifyCode.mutate(payload, {
       onSuccess: (data: any) => {
-        localStorage.setItem("verification_token", data.verification_token)
+        localStorage.setItem("verification_token", data.verification_token);
         navigate("/sign-up");
       },
-      onError: (error) => {
-        console.log("Ocurrio un error:" + error);
+      onError: (error: ApiResponseError) => {
+        setErrorModal(true);
+        setErrorMessage(error?.response?.data?.error);
       },
     });
   };
@@ -57,6 +62,15 @@ export const VerificationCode = () => {
           </Button>
         </Box>
       </FormProvider>
+      {errorModal && (
+        <Modal
+          title="Ocurrio un error"
+          open={errorModal}
+          onClose={() => setErrorModal(false)}
+        >
+          <Typography>{errorMessage}</Typography>
+        </Modal>
+      )}
     </Box>
   );
 };

@@ -9,6 +9,7 @@ import type {
   UpdateTeamRequest,
 } from "../models/team.model";
 import { teamService } from "../services/team.service";
+import type { ApiResponseError } from "../models/api.model";
 // import { createTeam, getTeams } from "../services/team.service";
 
 export const teamServiceKey = {
@@ -47,6 +48,9 @@ export const useTeamMutations = () => {
         queryKey: teamServiceKey.lists(),
       });
     },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
   });
 
   const editMutation = useMutation({
@@ -60,12 +64,18 @@ export const useTeamMutations = () => {
           queryKey: teamServiceKey.lists(),
         }));
     },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => teamService.deleteTeam(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: teamServiceKey.lists() });
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
     },
   });
 

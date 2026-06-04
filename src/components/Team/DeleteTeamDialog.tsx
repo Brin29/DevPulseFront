@@ -4,16 +4,23 @@ import { useState } from "react";
 import { useTeamMutations } from "../../hooks/team.hook";
 import { useNavigate, useParams } from "react-router-dom";
 import { Modal } from "../Modals/Modal";
+import type { ApiResponseError } from "../../models/api.model";
 
 export const DeleteTeamDialog = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const { delete: deleteTeam } = useTeamMutations();
 
   const handleDelete = () => {
     deleteTeam.mutate(id!, {
       onSuccess: () => navigate("/teams"),
+      onError: (error: ApiResponseError) => {
+        setErrorModal(true);
+        setErrorMessage(error?.response?.data?.error);
+      },
     });
   };
 
@@ -42,6 +49,16 @@ export const DeleteTeamDialog = () => {
           deshacer.
         </Typography>
       </Modal>
+
+      {errorModal && (
+        <Modal
+          title="Ocurrio un error"
+          open={errorModal}
+          onClose={() => setErrorModal(false)}
+        >
+          <Typography>{errorMessage}</Typography>
+        </Modal>
+      )}
     </>
   );
 };

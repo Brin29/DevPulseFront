@@ -7,11 +7,13 @@ import { useTeamMutations } from "../../hooks/team.hook";
 import { Input, InputType } from "../Input";
 import { FormModal } from "../Modals/FormModal";
 import { Modal } from "../Modals/Modal";
+import type { ApiResponseError } from "../../models/api.model";
 
 export const CreateTeamDialog = () => {
   const [open, setOpen] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const { create } = useTeamMutations();
 
   const { control, handleSubmit, reset } = useForm<CreateTeamRequest>({
@@ -25,9 +27,10 @@ export const CreateTeamDialog = () => {
         setSuccessModal(true);
         reset();
       },
-      onError: () => {
+      onError: (error: ApiResponseError) => {
         setOpen(false);
         setErrorModal(true);
+        setErrorMessage(error?.response?.data?.error);
         reset();
       },
     });
@@ -88,7 +91,7 @@ export const CreateTeamDialog = () => {
           open={successModal}
           onClose={() => setSuccessModal(false)}
         >
-          <Typography>La Creación fue exitosa</Typography>
+          <Typography>La creación fue exitosa</Typography>
         </Modal>
       )}
 
@@ -98,7 +101,7 @@ export const CreateTeamDialog = () => {
           open={errorModal}
           onClose={() => setErrorModal(false)}
         >
-          <Typography>Ocurrio un error en la creación</Typography>
+          <Typography>{errorMessage}</Typography>
         </Modal>
       )}
     </>

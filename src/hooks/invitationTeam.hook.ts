@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { invitationTeamService } from "../services/invitationTeam.service";
 import type { SendInvitationModel } from "../models/invitationTeams.models";
 import type { GetParams } from "../models/parms.model";
+import type { ApiResponseError } from "../models/api.model";
 
 export const invitationTeamServiceKey = {
   all: ["invitations"] as const,
@@ -49,6 +50,9 @@ export const useTeamInvitationMutations = () => {
         queryKey: invitationTeamServiceKey.all,
       });
     },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
   });
 
   const acceptInvitationMutation = useMutation({
@@ -59,6 +63,9 @@ export const useTeamInvitationMutations = () => {
         queryKey: invitationTeamServiceKey.all,
       });
     },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
   });
 
   const cancelInvitationMutation = useMutation({
@@ -68,6 +75,9 @@ export const useTeamInvitationMutations = () => {
       queryClient.invalidateQueries({
         queryKey: invitationTeamServiceKey.all,
       });
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
     },
   });
 
@@ -80,6 +90,9 @@ export const useTeamInvitationMutations = () => {
       queryClient.invalidateQueries({
         queryKey: invitationTeamServiceKey.all,
       });
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
     },
   });
 

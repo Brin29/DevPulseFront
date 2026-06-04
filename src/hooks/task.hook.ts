@@ -14,6 +14,7 @@ import type {
 import { taskService } from "../services/task.service";
 import type { GetTaskParams } from "../models/parms.model";
 import { paramsService } from "../services/params.service";
+import type { ApiResponseError } from "../models/api.model";
 
 export const taskServiceKey = {
   all: ["task"] as const,
@@ -69,6 +70,9 @@ export const useTaskMutations = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskServiceKey.lists() });
     },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
   });
 
   const editMutation = useMutation({
@@ -87,6 +91,9 @@ export const useTaskMutations = () => {
       });
       queryClient.invalidateQueries({ queryKey: taskServiceKey.lists() });
     },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
   });
 
   const deleteMutation = useMutation({
@@ -94,6 +101,9 @@ export const useTaskMutations = () => {
       taskService.deleteTask(teamId, taskId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskServiceKey.lists() });
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
     },
   });
 
@@ -112,6 +122,9 @@ export const useTaskMutations = () => {
         queryKey: taskServiceKey.detail(variables.taskId, variables.teamId),
       });
       queryClient.invalidateQueries({ queryKey: taskServiceKey.lists() });
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
     },
   });
 
@@ -149,6 +162,9 @@ export const useCommentMutations = () => {
         queryKey: taskServiceKey.comments(variables.teamId, variables.taskId),
       });
     },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
   });
 
   const editMutation = useMutation({
@@ -168,6 +184,9 @@ export const useCommentMutations = () => {
         queryKey: taskServiceKey.comments(variables.teamId, variables.taskId),
       });
     },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
   });
 
   const deleteMutation = useMutation({
@@ -184,6 +203,9 @@ export const useCommentMutations = () => {
       queryClient.invalidateQueries({
         queryKey: taskServiceKey.comments(variables.teamId, variables.taskId),
       });
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
     },
   });
 

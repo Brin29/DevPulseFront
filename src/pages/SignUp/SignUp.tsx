@@ -5,10 +5,15 @@ import type { SignUpRequest } from "../../models/auth.model";
 import { Input, InputType } from "../../components/Input";
 import { useNavigate } from "react-router-dom";
 import { authUserMutations } from "../../hooks/auth.hook";
+import type { ApiResponse, ApiResponseError } from "../../models/api.model";
+import { useState } from "react";
+import { Modal } from "../../components/Modals/Modal";
 
 export const SignUp = () => {
   const navigate = useNavigate();
   const email = localStorage.getItem("signup_email") as string;
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const verificationToken = localStorage.getItem(
     "verification_token",
   ) as string;
@@ -32,12 +37,13 @@ export const SignUp = () => {
     register.mutate(
       { data, verificationToken },
       {
-        onSuccess: (response: any) => {
+        onSuccess: (response: ApiResponse) => {
           navigate("/dashboard");
           localStorage.setItem("authMe", JSON.stringify(response));
         },
-        onError: (error: any) => {
-          console.log(error);
+        onError: (error: ApiResponseError) => {
+          setErrorModal(true);
+          setErrorMessage(error?.response?.data?.error);
         },
       },
     );
@@ -118,6 +124,15 @@ export const SignUp = () => {
           </Typography>
         </Box>
       </Box>
+      {errorModal && (
+        <Modal
+          title="Ocurrio un error"
+          open={errorModal}
+          onClose={() => setErrorModal(false)}
+        >
+          <Typography>{errorMessage}</Typography>
+        </Modal>
+      )}
     </Box>
   );
 };

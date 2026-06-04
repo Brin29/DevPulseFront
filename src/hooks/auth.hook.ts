@@ -1,8 +1,20 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { GenerateCodeRequest, MagicLinkGenerate, SignInRequest, VerifyCodeRequest } from "../models/auth.model";
-import { generateCode, magicLinkGenerate, signIn, signUp, verificationCode, verificationMagicLink, type SignUpPayload } from "../services/auth.service";
-
-
+import type {
+  GenerateCodeRequest,
+  MagicLinkGenerate,
+  SignInRequest,
+  VerifyCodeRequest,
+} from "../models/auth.model";
+import {
+  generateCode,
+  magicLinkGenerate,
+  signIn,
+  signUp,
+  verificationCode,
+  verificationMagicLink,
+  type SignUpPayload,
+} from "../services/auth.service";
+import type { ApiResponseError } from "../models/api.model";
 
 export const authUserServiceKey = {
   all: ["authUser"] as const,
@@ -18,18 +30,24 @@ export const authUserMutations = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: authUserServiceKey.lists(),
-      })
-    }
-  })
+      });
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
+  });
 
   const register = useMutation({
     mutationFn: (payload: SignUpPayload) => signUp(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: authUserServiceKey.lists(),
-      })
-    }
-  })
+      });
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
+  });
 
   const createMagicLink = useMutation({
     mutationFn: (payload: MagicLinkGenerate) => magicLinkGenerate(payload),
@@ -37,6 +55,9 @@ export const authUserMutations = () => {
       queryClient.invalidateQueries({
         queryKey: authUserServiceKey.lists(),
       });
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
     },
   });
 
@@ -47,6 +68,9 @@ export const authUserMutations = () => {
         queryKey: authUserServiceKey.lists(),
       });
     },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
   });
 
   const verifyCode = useMutation({
@@ -54,8 +78,11 @@ export const authUserMutations = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: authUserServiceKey.lists(),
-      })
-    }
+      });
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
   });
 
   const verfifyMagicLink = useMutation({
@@ -63,9 +90,12 @@ export const authUserMutations = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: authUserServiceKey.lists(),
-      })
-    }
-  })
+      });
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
+  });
 
   return {
     login,
@@ -73,6 +103,6 @@ export const authUserMutations = () => {
     createMagicLink,
     createCode,
     verifyCode,
-    verfifyMagicLink
-  }
+    verfifyMagicLink,
+  };
 };

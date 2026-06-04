@@ -21,6 +21,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Modal } from "../Modals/Modal";
+import type { ApiResponseError } from "../../models/api.model";
 
 export interface EditTaskProps {
   taskData: any;
@@ -30,6 +31,7 @@ export const EditTask: React.FC<EditTaskProps> = ({ taskData }) => {
   const { id: teamId } = useParams<{ id: string }>();
   const [successModal, setSuccessModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [open, setOpen] = useState(false);
   const { edit: editTask } = useTaskMutations();
   const { data: paramForm } = useTaskFormParams(teamId!!);
@@ -71,9 +73,10 @@ export const EditTask: React.FC<EditTaskProps> = ({ taskData }) => {
           setOpen(false);
           setSuccessModal(true);
         },
-        onError: () => {
+        onError: (error: ApiResponseError) => {
           setErrorModal(true);
-        }
+          setErrorMessage(error?.response?.data?.error);
+        },
       },
     );
   };
@@ -201,7 +204,7 @@ export const EditTask: React.FC<EditTaskProps> = ({ taskData }) => {
           open={errorModal}
           onClose={() => setErrorModal(false)}
         >
-          <Typography>Ocurrio un error en la edición</Typography>
+          <Typography>{errorMessage}</Typography>
         </Modal>
       )}
     </>

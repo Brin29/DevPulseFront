@@ -47,7 +47,7 @@ export const CreateTaskDialog = () => {
       { teamId: id!!, payload: data },
       {
         onSuccess: () => {
-          console.log("funciona");
+          
         },
       },
     );
