@@ -31,10 +31,21 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   return (
     <Dialog maxWidth={maxWidth} open={open} onClose={onClose} fullWidth>
-      <DialogTitle sx={{ fontWeight: 600 }}>{title}</DialogTitle>
-      <Box>
+      <DialogTitle
+        sx={{
+          fontWeight: 600,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {title}
+      </DialogTitle>
+      <Box
+        sx={{ flexDirection: "column", display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
         <DialogContent>{children}</DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
+        <DialogActions sx={{ mb: 2, px: 3, pb: 2 }}>
           {sendInfo ? (
             <>
               <Button variant="contained" onClick={onClose}>

@@ -19,6 +19,7 @@ export const DeleteTeamDialog = () => {
       onSuccess: () => navigate("/teams"),
       onError: (error: ApiResponseError) => {
         setErrorModal(true);
+        setDeleteModal(false);
         setErrorMessage(error?.response?.data?.error);
       },
     });
