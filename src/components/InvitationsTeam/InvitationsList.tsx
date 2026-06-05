@@ -122,16 +122,35 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
               <CardContent
                 sx={{
                   display: "flex",
-                  alignItems: "center",
+                  alignItems: { xs: "stretch", sm: "center" },
                   justifyContent: "space-between",
+                  flexDirection: { xs: "column", sm: "row" },
+                  gap: { xs: 1, sm: 0 },
                   py: 1.5,
                   "&:last-child": { pb: 1.5 },
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                  <EmailIcon sx={{ color: "grey.400", fontSize: 20 }} />
-                  <Box>
-                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    minWidth: 0,
+                  }}
+                >
+                  <EmailIcon
+                    sx={{ color: "grey.400", fontSize: 20, flexShrink: 0 }}
+                  />
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 500,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       {inv.email}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
@@ -141,7 +160,15 @@ export const InvitationsList = ({ teamId }: InvitationsListProps) => {
                     </Typography>
                   </Box>
                 </Box>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.5,
+                    ml: { xs: 0, sm: 1 },
+                    flexWrap: "wrap",
+                  }}
+                >
                   <Chip
                     label={inv.role}
                     size="small"
