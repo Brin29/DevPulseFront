@@ -25,7 +25,7 @@ const RouteGuard = ({ children }: { children: JSX.Element }) => {
   const authMeStr = localStorage.getItem("authMe");
 
   if (!authMeStr) {
-    console.warn("⚠️ No hay sesión activa, redirigiendo a inicio de sesión");
+    console.warn("No hay sesión activa, redirigiendo a inicio de sesión");
     return <Navigate to="/sign-in" replace />;
   }
 

@@ -36,8 +36,6 @@ const api: AxiosInstance = axios.create({
 
 let isRefreshing = false;
 
-// let isLoggingOut = false;
-
 let refreshSubscribers: {
   resolve: (token: string) => void;
   reject: (err: any) => void;
@@ -90,7 +88,6 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest =
       (error.config as AxiosRequestConfig & { _retry?: boolean }) || {};
-    // const url = originalRequest.url || "";
 
     pendingRequests--;
     if (pendingRequests <= 0) hideLoader();
@@ -103,8 +100,7 @@ api.interceptors.response.use(
       const refreshToken: string | undefined = storedUser?.refresh_token;
 
       if (!refreshToken) {
-        console.warn("⚠️ No hay refresh token, sesión inválida");
-        // handleLogout();
+        console.warn("No hay refresh token, sesión inválida");
         return Promise.reject({ ...error, isAuthError: true });
       }
 

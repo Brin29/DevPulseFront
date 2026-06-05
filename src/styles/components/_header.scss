@@ -40,6 +40,19 @@
     font-size: $h5-size;
     font-weight: 600;
     color: $color-gray-800;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+
+    @include respond("md") {
+      max-width: 140px;
+      font-size: $h6-size;
+    }
+
+    @include respond("sm") {
+      max-width: 100px;
+    }
   }
 
   &__right {
