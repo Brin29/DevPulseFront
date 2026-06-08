@@ -1,73 +1,88 @@
-# React + TypeScript + Vite
+# 🚀 DevPulse
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+DevPulse es una plataforma de gestión de proyectos, tareas e incidentes diseñada para equipos de desarrollo de software. Su objetivo es centralizar la planificación, seguimiento y colaboración de equipos técnicos mediante una experiencia moderna inspirada en herramientas como Jira, Linear y GitHub.
 
-Currently, two official plugins are available:
+## ✨ Características principales
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### 🔐 Autenticación y seguridad
 
-## React Compiler
+* Registro e inicio de sesión con JWT.
+* Verificación de cuenta mediante código de confirmación.
+* Control de acceso basado en roles.
+* Protección de rutas y recursos.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 👥 Gestión de equipos
 
-## Expanding the ESLint configuration
+* Creación y administración de equipos.
+* Invitación de miembros mediante correo electrónico.
+* Aceptación de invitaciones mediante enlaces seguros.
+* Gestión de roles y permisos dentro de cada equipo.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 📋 Gestión de proyectos
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* Creación de proyectos.
+* Organización de tareas por proyecto.
+* Seguimiento del progreso del equipo.
+* Asignación de responsables.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 🎯 Sistema de tareas e incidencias
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+* Creación de tareas, bugs e incidentes.
+* Estados de trabajo:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+  * Backlog
+  * Todo
+  * In Progress
+  * Review
+  * Done
+* Prioridades:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+  * Low
+  * Medium
+  * High
+  * Critical
+* Asignación de responsables.
+* Fechas límite y seguimiento de actividad.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 💬 Sistema de comentarios
+
+* Comentarios enriquecidos utilizando editor de texto avanzado.
+* Menciones a miembros del equipo mediante `@usuario`.
+* Adjuntos e imágenes almacenadas en la nube.
+* Historial de conversaciones asociado a cada tarea.
+
+## 🏗️ Arquitectura
+
+DevPulse está construido siguiendo una arquitectura modular enfocada en escalabilidad y mantenibilidad.
+
+### Frontend
+
+* React
+* TypeScript
+* Material UI
+* TanStack Query
+* React Router
+* React Hook Form
+
+### Infraestructura
+
+* Docker
+* CI/CD
+* Variables de entorno seguras
+
+## Objetivos del proyecto
+
+DevPulse nació con el propósito de aplicar buenas prácticas de desarrollo Full Stack y construir una solución cercana a escenarios reales de trabajo colaborativo.
+
+Entre los conceptos implementados destacan:
+
+* Arquitectura modular.
+* Multi-tenancy.
+* Gestión de permisos.
+* Autenticación segura.
+* Sistemas de invitación.
+* Interfaces modernas y accesibles.
+* Integración entre frontend y backend.
+
+
+Desarrollado por **Breiner Parra** como proyecto Full Stack para demostrar habilidades en desarrollo web moderno, arquitectura de software y construcción de productos SaaS.
