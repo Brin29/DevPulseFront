@@ -1,31 +1,31 @@
-# 🚀 DevPulse
+# DevPulse
 
 DevPulse es una plataforma de gestión de proyectos, tareas e incidentes diseñada para equipos de desarrollo de software. Su objetivo es centralizar la planificación, seguimiento y colaboración de equipos técnicos mediante una experiencia moderna inspirada en herramientas como Jira, Linear y GitHub.
 
-## ✨ Características principales
+## Características principales
 
-### 🔐 Autenticación y seguridad
+### Autenticación y seguridad
 
 * Registro e inicio de sesión con JWT.
 * Verificación de cuenta mediante código de confirmación.
 * Control de acceso basado en roles.
 * Protección de rutas y recursos.
 
-### 👥 Gestión de equipos
+### Gestión de equipos
 
 * Creación y administración de equipos.
 * Invitación de miembros mediante correo electrónico.
 * Aceptación de invitaciones mediante enlaces seguros.
 * Gestión de roles y permisos dentro de cada equipo.
 
-### 📋 Gestión de proyectos
+### Gestión de proyectos
 
 * Creación de proyectos.
 * Organización de tareas por proyecto.
 * Seguimiento del progreso del equipo.
 * Asignación de responsables.
 
-### 🎯 Sistema de tareas e incidencias
+### Sistema de tareas e incidencias
 
 * Creación de tareas, bugs e incidentes.
 * Estados de trabajo:
@@ -51,7 +51,7 @@ DevPulse es una plataforma de gestión de proyectos, tareas e incidentes diseña
 * Adjuntos e imágenes almacenadas en la nube.
 * Historial de conversaciones asociado a cada tarea.
 
-## 🏗️ Arquitectura
+## Arquitectura
 
 DevPulse está construido siguiendo una arquitectura modular enfocada en escalabilidad y mantenibilidad.
 
