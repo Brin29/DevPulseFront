@@ -44,7 +44,7 @@ DevPulse es una plataforma de gestión de proyectos, tareas e incidentes diseña
 * Asignación de responsables.
 * Fechas límite y seguimiento de actividad.
 
-### 💬 Sistema de comentarios
+### Sistema de comentarios
 
 * Comentarios enriquecidos utilizando editor de texto avanzado.
 * Menciones a miembros del equipo mediante `@usuario`.
