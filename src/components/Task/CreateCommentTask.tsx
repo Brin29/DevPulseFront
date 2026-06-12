@@ -27,9 +27,9 @@ export const CreateCommentTask = ({
 }: CreateCommentTaskProps) => {
   const { create, edit, delete: deleteComment } = useCommentMutations();
   const { data: paramForm } = useTaskFormParams(teamId);
-  const authMeStr = localStorage.getItem("authMe");
-  const authMe = authMeStr ? JSON.parse(authMeStr) : null;
-  const currentUserId: string = authMe?.data?.user?.id || "";
+  const userMeStr = localStorage.getItem("meUser");
+  const userMe = userMeStr ? JSON.parse(userMeStr) : null;
+  const currentUserId: string = userMe?.id || "";
 
   const mentionUsers = useMemo(
     () =>

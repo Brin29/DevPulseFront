@@ -10,7 +10,7 @@ import api, { sendRequest } from "./api";
 
 export const taskService = {
   fetchAllTask: (params: GetTaskParams, teamId: string) =>
-    api.get(`/teams/${teamId}/tasks`, { params }).then((r) => r.data),
+    api.get(`/teams/${teamId}/tasks`, { params, skipLoader: true }).then((r) => r.data),
 
   fetchTaskById: (taskId: string, teamId: string) =>
     api.get(`/teams/${teamId}/tasks/${taskId}`).then((r) => r.data),
@@ -33,7 +33,7 @@ export const taskService = {
     api.delete(`/teams/${teamId}/tasks/${taskId}`).then((r) => r.data),
 
   updateStatusTask: (teamId: string, taskId: string, payload: UpdateStatusTaskRequest) => 
-    sendRequest<UpdateStatusTaskRequest, { id: string }>(`/teams/${teamId}/tasks/${taskId}/status`, payload, undefined, "patch").then((r) => r.data),
+    sendRequest<UpdateStatusTaskRequest, { id: string }>(`/teams/${teamId}/tasks/${taskId}/status`, payload, { skipLoader: true }, "patch").then((r) => r.data),
 
   createComment: (teamId: string, taskId: string, payload: CreateTaskCommentRequest) => 
     sendRequest<CreateTaskCommentRequest, { id: string }>(`/teams/${teamId}/tasks/${taskId}/comments`, payload).then((r) => r.data),

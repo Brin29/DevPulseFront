@@ -1,6 +1,6 @@
 services:
   frontend:
-    container_name: devpulsefront_dev
+    container_name: devpulse_dev
     build:
       context: .
       dockerfile: Dockerfile.dev

@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
   GenerateCodeRequest,
   MagicLinkGenerate,
@@ -6,10 +6,15 @@ import type {
   VerifyCodeRequest,
 } from "../models/auth.model";
 import {
+  changeAvatar,
+  changePassword,
+  deleteAccount,
   generateCode,
+  getProfile,
   magicLinkGenerate,
   signIn,
   signUp,
+  updateProfile,
   verificationCode,
   verificationMagicLink,
   type SignUpPayload,
@@ -21,6 +26,14 @@ export const authUserServiceKey = {
   lists: () => [...authUserServiceKey.all, "list"] as const,
   details: () => [...authUserServiceKey.all, "detail"] as const,
 };
+
+export const getUserProfile = () => {
+  return useQuery({
+    queryKey: authUserServiceKey.lists(),
+    queryFn: () => getProfile(),
+    placeholderData: keepPreviousData,
+  })
+}
 
 export const authUserMutations = () => {
   const queryClient = useQueryClient();
@@ -97,6 +110,51 @@ export const authUserMutations = () => {
     },
   });
 
+  const avatarUpload = useMutation({
+    mutationFn: (formData: FormData) => changeAvatar(formData),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: authUserServiceKey.lists(),
+      });
+      if (data?.user) {
+        localStorage.setItem("meUser", JSON.stringify(data.user));
+      }
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
+  });
+
+  const profileUpdate = useMutation({
+    mutationFn: (payload: { firstName?: string; lastName?: string }) => updateProfile(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: authUserServiceKey.lists(),
+      });
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
+  });
+
+  const passwordChange = useMutation({
+    mutationFn: (payload: { currentPassword: string; newPassword: string }) => changePassword(payload),
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
+  });
+
+  const accountDelete = useMutation({
+    mutationFn: () => deleteAccount(),
+    onSuccess: () => {
+      localStorage.removeItem("meUser");
+      queryClient.clear();
+    },
+    onError: (error: ApiResponseError) => {
+      console.log(error);
+    },
+  });
+
   return {
     login,
     register,
@@ -104,5 +162,9 @@ export const authUserMutations = () => {
     createCode,
     verifyCode,
     verfifyMagicLink,
+    avatarUpload,
+    profileUpdate,
+    passwordChange,
+    accountDelete,
   };
 };

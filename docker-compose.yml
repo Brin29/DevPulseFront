@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: devpulsefrontprod
+    container_name: devpulseprod
     ports:
       - "3000:80"
     volumes:

@@ -1,4 +1,8 @@
-import { TextField, type InputBaseProps } from "@mui/material";
+import {
+  TextField,
+  type BoxProps,
+  type InputBaseProps,
+} from "@mui/material";
 import {
   Controller,
   type Control,
@@ -15,6 +19,8 @@ interface InputProps<T extends FieldValues> {
   rules?: RegisterOptions<T>;
   inputProps?: InputBaseProps["inputProps"];
   disabled?: boolean;
+  sx?: BoxProps["sx"];
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 export enum InputType {
@@ -34,15 +40,22 @@ export const Input = <T extends FieldValues>({
   rules,
   inputProps,
   disabled = false,
+  sx,
+  onBlur,
 }: InputProps<T>) => {
   return (
     <Controller
       name={name}
       control={control}
       rules={rules}
-      render={({ field, fieldState }) => (
+      render={({ field: { onBlur: fieldOnBlur, ...fieldRest }, fieldState }) => (
         <TextField
-          {...field}
+          sx={{ ...sx }}
+          {...fieldRest}
+          onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+            fieldOnBlur();
+            onBlur?.(e);
+          }}
           required
           disabled={disabled}
           type={type}

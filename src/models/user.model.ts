@@ -4,4 +4,10 @@ export interface User {
   email: string;
   role: string;
   password: string;
+  avatar?: string;
+}
+
+export interface UpdateProfileRequest {
+  firstName?: string;
+  lastName?: string;
 }

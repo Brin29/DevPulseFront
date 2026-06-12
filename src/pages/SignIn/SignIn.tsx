@@ -7,13 +7,23 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { authUserMutations } from "../../hooks/auth.hook";
 import { useState } from "react";
 import { Modal } from "../../components/Modals/Modal";
-import type { ApiResponse, ApiResponseError } from "../../models/api.model";
+import type { ApiResponseError } from "../../models/api.model";
+import GithubIcon from "../../assets/githubIcon";
+import GoogleIcon from "../../assets/googleIcon";
 
 export const SignIn = () => {
   const { login } = authUserMutations();
   const [searchParams] = useSearchParams();
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const handleGoogleClick = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
+  };
+
+  const handleGithubClick = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/github`;
+  };
 
   const navigate = useNavigate();
   const { handleSubmit, control } = useForm<SignInRequest>({
@@ -32,9 +42,17 @@ export const SignIn = () => {
     };
 
     login.mutate(payload, {
-      onSuccess: (response: ApiResponse) => {
+      onSuccess: (response: any) => {
+        localStorage.setItem(
+          "authMe",
+          JSON.stringify({
+            access_token: response.access_token,
+            refresh_token: response.refresh_token,
+          }),
+        );
+        localStorage.setItem("meUser", JSON.stringify(response.user));
         navigate(redirect || "/dashboard");
-        localStorage.setItem("authMe", JSON.stringify(response));
+
         localStorage.removeItem("auth_redirect");
       },
       onError: (error: ApiResponseError) => {
@@ -97,9 +115,27 @@ export const SignIn = () => {
             ¿Olvidaste tu contraseña?
           </Link>
         </Box> */}
-        <Button className="w-full" type="submit" size="large">
+        <Button variant="contained" className="w-full" type="submit" size="large">
           Iniciar sesión
         </Button>
+
+      <Button
+      sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}
+        variant="outlined"
+        onClick={handleGoogleClick}>
+        <GoogleIcon/>
+        Continuar con Google
+      </Button>
+
+      <Button
+        sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}
+        variant="outlined"
+        onClick={handleGithubClick}
+      >
+        <GithubIcon/>
+        Continuar con Github
+      </Button>
+
         <Box className="form-footer">
           <Typography>
             ¿No tienes cuenta?{" "}

@@ -5,6 +5,7 @@ import { DetectedAccount } from "../pages/DetectedAccount/DetectedAccount";
 import { VerificationCode } from "../pages/VerificationCode/VerificationCode";
 import { RequestCode } from "../pages/RequestCode/RequestCode";
 import { MagicLogin } from "../pages/MagicLogin/MagicLogin";
+import { OAuthSuccess } from "../pages/OAuthSuccess/OAuthSuccess";
 import { Dashboard } from "../pages/Dashboard/Dashboard";
 import { useEffect } from "react";
 import RouteGuard from "./RouteGuard";
@@ -49,6 +50,7 @@ export const AppContent = () => {
           <Route path="verify-code" element={<VerificationCode />} />
           <Route path="magic-login" element={<MagicLogin />} />
           <Route path="detected-account" element={<DetectedAccount />} />
+          <Route path="oauth-success" element={<OAuthSuccess />} />
           <Route
             path="teams/invitations/:token/accept"
             element={<AcceptInvitationPage />}
@@ -93,6 +95,7 @@ export const AppContent = () => {
             </RouteGuard>
           }
         />
+
       </Route>
     </Routes>
   );

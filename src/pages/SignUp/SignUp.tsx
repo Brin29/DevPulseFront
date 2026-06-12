@@ -5,7 +5,7 @@ import type { SignUpRequest } from "../../models/auth.model";
 import { Input, InputType } from "../../components/Input";
 import { useNavigate } from "react-router-dom";
 import { authUserMutations } from "../../hooks/auth.hook";
-import type { ApiResponse, ApiResponseError } from "../../models/api.model";
+import type { ApiResponseError } from "../../models/api.model";
 import { useState } from "react";
 import { Modal } from "../../components/Modals/Modal";
 
@@ -37,9 +37,9 @@ export const SignUp = () => {
     register.mutate(
       { data, verificationToken },
       {
-        onSuccess: (response: ApiResponse) => {
+        onSuccess: (response: any) => {
           navigate("/dashboard");
-          localStorage.setItem("authMe", JSON.stringify(response));
+          localStorage.setItem("authMe",  JSON.stringify({ access_token: response.access_token, refresh_token: response.refresh_token }))
         },
         onError: (error: ApiResponseError) => {
           setErrorModal(true);
@@ -108,7 +108,7 @@ export const SignUp = () => {
             },
           }}
         />
-        <Button className="w-full" type="submit" size="large">
+        <Button variant="contained" className="w-full" type="submit" size="large">
           Crear cuenta
         </Button>
         <Box className="form-footer">

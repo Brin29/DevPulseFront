@@ -9,7 +9,7 @@ import type {
   SignUpRequest,
   VerifyCodeRequest,
 } from "../models/auth.model";
-import { sendRequest } from "./api";
+import api, { sendRequest } from "./api";
 
 export interface SignUpPayload {
   data: SignUpRequest;
@@ -54,16 +54,27 @@ export const magicLinkGenerate = (magicLinkGenerate: MagicLinkGenerate) =>
 export const verificationMagicLink = (verifyMagicLink: any) =>
   authCall<any, any>("/auth/verify-magic-token", verifyMagicLink);
 
-export const signUp = ({
-  data,
-  verificationToken,
-}: SignUpPayload) =>
+export const signUp = ({ data, verificationToken }: SignUpPayload) =>
   authCall<any, SignUpRequest>("/auth/register", data, {
     headers: {
       Authorization: `Bearer ${verificationToken}`,
     },
   });
 
-export const logout = () => console.log("");
+export const getProfile = () => api.get("/auth/profile").then((r) => r.data);
 
-export const me = () => console.log("");
+export const changeAvatar = (formData: FormData) =>
+  api.post("/auth/avatar", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  }).then((r) => r.data);
+
+export const updateProfile = (payload: { firstName?: string; lastName?: string }) =>
+  sendRequest<{ firstName?: string; lastName?: string }, any>("/auth/profile", payload, { skipLoader: true }, "put").then((r) => r.data);
+
+export const changePassword = (payload: { currentPassword: string; newPassword: string }) =>
+  api.put("/auth/profile/password", payload).then((r) => r.data);
+
+export const deleteAccount = () =>
+  api.delete("/auth/profile").then((r) => r.data);

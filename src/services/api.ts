@@ -12,6 +12,12 @@ import { hideLoader, showLoader } from "./loaderEvents";
 
 let pendingRequests = 0;
 
+declare module "axios" {
+  export interface AxiosRequestConfig {
+    skipLoader?: boolean;
+  }
+}
+
 let rawBaseUrl = import.meta.env.VITE_API_URL as string;
 
 if (!/^https?:\/\//i.test(rawBaseUrl)) {
@@ -68,8 +74,11 @@ api.interceptors.request.use(
         `Bearer ${accessToken}`;
     }
 
-    showLoader();
-    pendingRequests++;
+    if (!config.skipLoader) {
+      pendingRequests++;
+      showLoader();
+    }
+
     return config;
   },
   (error) => {
@@ -146,10 +155,20 @@ api.interceptors.response.use(
         const newRefresh = refreshResp.data.refresh_token;
 
         const updatedAuth = storedUserStr
-          ? { ...JSON.parse(storedUserStr), access_token: newAccess, refresh_token: newRefresh || refreshToken }
+          ? {
+              ...JSON.parse(storedUserStr),
+              access_token: newAccess,
+              refresh_token: newRefresh || refreshToken,
+            }
           : null;
         if (updatedAuth) {
-          localStorage.setItem("authMe", JSON.stringify(updatedAuth));
+          localStorage.setItem(
+            "authMe",
+            JSON.stringify({
+              access_token: updatedAuth.access_token,
+              refresh_token: updatedAuth.refresh_token,
+            }),
+          );
         }
 
         onRefreshed(newAccess);
@@ -187,7 +206,7 @@ export async function sendRequest<ReqData, ResData>(
   const body: ApiRequest<ReqData> = {
     data: payload,
   };
-
+  
   if (method === "delete") {
     const { data } = await api.delete<ApiResponse<ResData>>(endpoint, {
       ...config,
@@ -195,6 +214,7 @@ export async function sendRequest<ReqData, ResData>(
     });
     return data;
   }
+  
   const { data } = await api[method]<ApiResponse<ResData>>(
     endpoint,
     body,

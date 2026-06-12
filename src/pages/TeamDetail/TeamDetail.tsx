@@ -28,8 +28,8 @@ export const TeamDetail = () => {
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const { setSelectedTeam } = useTeamContext();
 
-  const myAuthUserSTR = JSON.parse(localStorage.getItem("authMe")!!);
-  const myUserId = myAuthUserSTR.user.id;
+  const userMeSTR = JSON.parse(localStorage.getItem("meUser")!!);
+  const myUserId = userMeSTR.id;
 
   useEffect(() => {
     if (data?.team) {

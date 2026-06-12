@@ -13,8 +13,9 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LogoutIcon from "@mui/icons-material/Logout";
-// import { useNavigate } from "react-router-dom";
+import PersonIcon from "@mui/icons-material/Person";
 import { useTeamContext } from "../../context/TeamContext";
+import { ProfileModal } from "../Modals/ProfileModal";
 
 interface HeaderProps {
   collapsed: boolean;
@@ -27,10 +28,12 @@ export const Header = ({
   onToggleCollapse,
   onMobileOpen,
 }: HeaderProps) => {
-  const authUser = JSON.parse(localStorage.getItem("authMe")!!);
-  const userEmail = authUser?.user.email;
+  const meUserStr = JSON.parse(localStorage.getItem("meUser")!!);
+  const userEmail = meUserStr?.email;
+  const meAvatar = meUserStr?.avatar;
 
   const theme = useTheme();
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { selectedTeam } = useTeamContext();
 
@@ -78,9 +81,11 @@ export const Header = ({
       </div>
 
       <div className="header__right">
-        <Avatar className="header__avatar" onClick={handleAvatarClick}>
-          { userEmail ? userEmail[0].toUpperCase() : "U" }
-        </Avatar>
+        <Avatar
+          className="header__avatar"
+          src={meAvatar || undefined}
+          onClick={handleAvatarClick}
+        />
         <Menu
           anchorEl={anchorEl}
           open={menuOpen}
@@ -102,6 +107,17 @@ export const Header = ({
             </Typography>
           </MenuItem>
           <Divider />
+          <MenuItem
+            onClick={() => {
+              handleMenuClose();
+              setProfileModalOpen(true);
+            }}
+          >
+            <ListItemIcon>
+              <PersonIcon fontSize="small" />
+            </ListItemIcon>
+            Mi Perfil
+          </MenuItem>
           <MenuItem onClick={handleLogout}>
             <ListItemIcon>
               <LogoutIcon fontSize="small" />
@@ -110,6 +126,11 @@ export const Header = ({
           </MenuItem>
         </Menu>
       </div>
+
+      <ProfileModal
+        open={profileModalOpen}
+        onClose={() => setProfileModalOpen(false)}
+      />
     </header>
   );
 };

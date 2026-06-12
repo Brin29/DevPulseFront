@@ -10,6 +10,8 @@ import { authUserMutations } from "../../hooks/auth.hook";
 import type { ApiResponseError } from "../../models/api.model";
 import { useState } from "react";
 import { Modal } from "../../components/Modals/Modal";
+import GoogleIcon from "../../assets/googleIcon";
+import GithubIcon from "../../assets/githubIcon";
 
 export const RequestCode = () => {
   const navigate = useNavigate();
@@ -23,6 +25,14 @@ export const RequestCode = () => {
       email: "",
     },
   });
+
+  const handleGoogleClick = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
+  };
+
+  const handleGithubClick = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/github`;
+  };
 
   const onSubmit = async (data: CheckEmailRequest) => {
     const payload = {
@@ -93,9 +103,43 @@ export const RequestCode = () => {
           }}
         />
 
-        <Button className="w-full" type="submit" size="large">
+        <Button
+          variant="contained"
+          className="w-full"
+          type="submit"
+          size="large"
+        >
           Continuar
         </Button>
+
+        <Button
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 1,
+          }}
+          variant="outlined"
+          onClick={handleGoogleClick}
+        >
+          <GoogleIcon />
+          Continuar con Google
+        </Button>
+
+        <Button
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 1,
+          }}
+          variant="outlined"
+          onClick={handleGithubClick}
+        >
+          <GithubIcon />
+          Continuar con Github
+        </Button>
+
         <Box className="form-footer">
           <Typography>
             ¿Ya tienes cuenta?{" "}
