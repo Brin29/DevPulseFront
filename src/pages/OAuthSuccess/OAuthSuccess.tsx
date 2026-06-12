@@ -39,7 +39,7 @@ export const OAuthSuccess = () => {
     localStorage.setItem("meUser", JSON.stringify(data?.user));
 
     if (data) {
-      navigate(redirect || "/dashboard");
+      navigate(decodeURIComponent(redirect!!) || "/dashboard");
     }
   }, [accessToken, refreshToken, navigate, data]);
 
