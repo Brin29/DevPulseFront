@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useTeamInvitationMutations } from "../../hooks/invitationTeam.hook";
+import type { ApiResponseError } from "../../models/api.model";
 
 export const AcceptInvitationPage = () => {
   const { token } = useParams();
@@ -58,7 +59,7 @@ export const AcceptInvitationPage = () => {
           <Box className="form-container" sx={{ textAlign: "center" }}>
             <Typography component="h2">Error</Typography>
             <Alert severity="error" sx={{ mb: 2 }}>
-              {(acceptInvitation.error as any)?.message ||
+              {(acceptInvitation.error as ApiResponseError)?.response.data.error ||
                 "No se pudo aceptar la invitación. Intenta de nuevo."}
             </Alert>
             <Button
