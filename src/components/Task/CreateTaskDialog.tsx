@@ -47,7 +47,7 @@ export const CreateTaskDialog = () => {
       { teamId: id!!, payload: data },
       {
         onSuccess: () => {
-          
+          setOpen(false);
         },
       },
     );
@@ -70,7 +70,7 @@ export const CreateTaskDialog = () => {
       </Button>
 
       <FormModal
-        title="Crear equipo"
+        title="Crear tarea"
         open={open}
         onClose={handleClose}
         submitBtn="Crear"
