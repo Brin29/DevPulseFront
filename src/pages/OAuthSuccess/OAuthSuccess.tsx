@@ -25,6 +25,9 @@ export const OAuthSuccess = () => {
       return;
     }
 
+    const redirect =
+      searchParams.get("redirect") ?? localStorage.getItem("auth_redirect");
+
     localStorage.setItem(
       "authMe",
       JSON.stringify({
@@ -36,7 +39,7 @@ export const OAuthSuccess = () => {
     localStorage.setItem("meUser", JSON.stringify(data?.user));
 
     if (data) {
-      navigate("/dashboard", { replace: true });
+      navigate(redirect || "/dashboard", { replace: true });
     }
   }, [accessToken, refreshToken, navigate, data]);
 
