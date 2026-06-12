@@ -25,7 +25,7 @@ export const OAuthSuccess = () => {
       return;
     }
 
-    // const redirect = localStorage.getItem("auth_redirect");
+    const redirect = localStorage.getItem("auth_redirect");
 
     localStorage.setItem(
       "authMe",
@@ -38,7 +38,13 @@ export const OAuthSuccess = () => {
     localStorage.setItem("meUser", JSON.stringify(data?.user));
 
     if (data) {
-      navigate("/dashboard", { replace: true });
+      console.log(redirect)
+      if (redirect !== null){
+        navigate(decodeURIComponent(redirect!!));
+      }
+      else {
+        navigate("/dashboard", { replace: true })
+      }
     }
   }, [accessToken, refreshToken, navigate, data]);
 
