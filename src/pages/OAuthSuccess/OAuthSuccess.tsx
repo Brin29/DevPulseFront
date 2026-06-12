@@ -25,8 +25,7 @@ export const OAuthSuccess = () => {
       return;
     }
 
-    const redirect =
-      searchParams.get("redirect") ?? localStorage.getItem("auth_redirect");
+    const redirect = localStorage.getItem("auth_redirect");
 
     localStorage.setItem(
       "authMe",
