@@ -51,13 +51,14 @@ export const AppContent = () => {
           <Route path="magic-login" element={<MagicLogin />} />
           <Route path="detected-account" element={<DetectedAccount />} />
           <Route path="oauth-success" element={<OAuthSuccess />} />
-          <Route
-            path="teams/invitations/:token/accept"
-            element={<AcceptInvitationPage />}
-          />
         </Route>
       </Route>
 
+      <Route
+        path="teams/invitations/:token/accept"
+        element={<AcceptInvitationPage />}
+      />
+      
       <Route element={<Layout />}>
         <Route
           path="dashboard"
@@ -95,7 +96,6 @@ export const AppContent = () => {
             </RouteGuard>
           }
         />
-
       </Route>
     </Routes>
   );

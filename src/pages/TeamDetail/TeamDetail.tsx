@@ -103,8 +103,12 @@ export const TeamDetail = () => {
                   </Typography>
                 </Box>
                 <Box sx={{ display: "flex", gap: 1 }}>
-                  <EditTeamDialog team={data.team} />
-                  <DeleteTeamDialog />
+                  {isUserAdmin && (
+                    <>
+                      <EditTeamDialog team={data.team} />
+                      <DeleteTeamDialog />
+                    </>
+                  )}
                 </Box>
               </Box>
               <Typography variant="body1" color="text.secondary">

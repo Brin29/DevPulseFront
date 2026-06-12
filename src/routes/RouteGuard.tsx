@@ -11,7 +11,7 @@ const RouteGuard = ({ children }: { children: JSX.Element }) => {
     "/verify-code",
     "/detected-account",
     "/magic-login",
-    "/teams/invitations/:token/accept",
+    // "/teams/invitations/:token/accept",
   ];
 
   const isPublicRoute = publicRoutes.some((route) =>
